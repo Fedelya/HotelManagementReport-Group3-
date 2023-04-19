@@ -5,19 +5,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
+
+import java.sql.Date;
 
 import connectDB.ConnectDB;
 import entity.KhachHang;
 
 public class KhachHang_DAO {
+	
+	private static KhachHang_DAO instance = new KhachHang_DAO();
+
+    public static KhachHang_DAO getInstance() {
+        return instance;
+    }
 	public ArrayList<KhachHang> getalltbKhachHang() {
 		ArrayList<KhachHang> dsKhachHang = new ArrayList<KhachHang>();
 		try {
 			ConnectDB.getInstance();
-			Connection con = new ConnectDB().getConnection();
+			Connection con = ConnectDB.getConnection();
 
-			String sql = "Select * from KhachHang";
+			String sql = "Select * from dbo.KhachHang";
 			Statement statement = con.createStatement();
 			// Thực thi câu lệnh SQL trả về đối tượng ResultSet
 			ResultSet rs = statement.executeQuery(sql);

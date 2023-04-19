@@ -30,12 +30,12 @@ public class DatePicker extends JPanel implements ActionListener {
 
 	private void createGUI() {
 		txt = new JTextField();
-		txt.setBounds(0, 0, widthDefault - 20, 20);
+		txt.setBounds(0, 0, widthDefault -70, 20);
 		txt.setEditable(false);
 		txt.setText(DialogDatePicker.getToDay());
 
 		btn = new JButton(calenderIcon);
-		btn.setBounds(widthDefault - 20, 0, 30, 20);
+		btn.setBounds(widthDefault - 70, 0, 30, 20);
 
 		this.add(txt);
 		this.add(btn);

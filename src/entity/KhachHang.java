@@ -1,6 +1,8 @@
 package entity;
 
-import java.util.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Date;
 import java.util.Objects;
 
 public class KhachHang {
@@ -29,7 +31,7 @@ public class KhachHang {
 		if(!maKhachHang.trim().equals("")) {
 			this.maKhachHang = maKhachHang;
 		}else {
-			this.maKhachHang = "Un-known";
+			this.maKhachHang = "Chưa cập nhật";
 		}
 	}
 	public String getTenKhachHang() {
@@ -39,17 +41,17 @@ public class KhachHang {
 		if(!tenKhachHang.trim().equals("")) {
 			this.tenKhachHang = tenKhachHang;
 		}else {
-			this.tenKhachHang = "Un-known";
+			this.tenKhachHang = "Chưa cập nhật";
 		}
 	}
 	public String getQuocTich() {
 		return quocTich;
 	}
 	public void setQuocTich(String quocTich) {
-		if(!quocTich.trim().equals("")) {
+		if((quocTich.equalsIgnoreCase("Việt Nam" )) || (quocTich.equalsIgnoreCase("Nước ngoài"))) {
 			this.quocTich = quocTich;
 		}else {
-			this.quocTich = "Un-known";
+			this.quocTich = "Việt Nam";
 		}
 	}
 	public String getCCCD() {
@@ -59,7 +61,7 @@ public class KhachHang {
 		if(!cCCD.trim().equals("")) {
 			this.CCCD = cCCD;
 		}else {
-			this.CCCD = "Un-known";
+			this.CCCD = "Chưa cập nhật";
 		}
 	}
 	public Date getNgayHetHanCCCD() {
@@ -67,6 +69,10 @@ public class KhachHang {
 	}
 	public void setNgayHetHanCCCD(Date ngayHetHanCCCD) {
 		this.ngayHetHanCCCD = ngayHetHanCCCD;
+	}
+	
+	public KhachHang(ResultSet rs) throws SQLException {
+		this(rs.getString("MaKH"), rs.getString("TenKH"), rs.getString("QuocTich"),rs.getString("CCCD"), rs.getDate("NgayHetHanCCCD"));
 	}
 	@Override
 	public int hashCode() {

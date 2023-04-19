@@ -272,7 +272,7 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame {
 		pnlDVDaDat.setLayout(null);
 
 		JScrollPane scroll;
-		String[] headers = { "Mã dịch vụ", "Tên dịch vụ", "số lượng", "Đơn giá", "Thời gian đặt", "Mã hóa đơn" };
+		String[] headers = { "Mã dịch vụ", "Tên dịch vụ", "Số lượng", "Đơn giá", "Thời gian đặt", "Mã hóa đơn" };
 
 		tableModel = new DefaultTableModel(headers, 0);
 

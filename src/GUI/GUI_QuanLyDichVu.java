@@ -75,16 +75,16 @@ public class GUI_QuanLyDichVu extends JFrame{
 
 //            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
 //            bar.add(sep1, "growy");
-		menuDatPhong = new JMenu(" ?ặt phòng");
+		menuDatPhong = new JMenu(" Đặt phòng");
 //		menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
 //		menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
 //		menuBar.add(menuDatPhong);
 		menuDatPhong.setBounds(x, 160, w, h);
-		itemDatPhong = new JMenuItem(" ?ặt phòng");
+		itemDatPhong = new JMenuItem(" Đặt phòng");
 		menuDatPhong.add(itemDatPhong);
 		menuBar.add(menuDatPhong);
 
-		menuQuanLyHoaDon = new JMenu("Quản Lý Hóa  ?ơn");
+		menuQuanLyHoaDon = new JMenu("Quản Lý Hóa Đơn");
 //		menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
 //		menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
 //		menuBar.add(menuQuanLyHoaDon);

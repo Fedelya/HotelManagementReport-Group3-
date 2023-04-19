@@ -10,6 +10,10 @@ import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.Menu;
 import java.security.DomainCombiner;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -34,38 +38,49 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import connectDB.ConnectDB;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
 
 public class GUI_QuanLyKhachHang extends JFrame {
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu, itemDatPhong, itemQuanLyHoaDon, itemQuanLyPhong, itemQuanLyDichVu,
-	itemQuanLyKhachHang, itemQuanLyNhanVien,  itemThongKeDichVu, itemThongKeKhachHang, itemThongKeNhanVien;
+			itemQuanLyKhachHang, itemQuanLyNhanVien, itemThongKeDichVu, itemThongKeKhachHang, itemThongKeNhanVien;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
 			menuQuanLyNhanVien, menuThongKe, subMenu;
 
 	private int x = 0, w = 150, h = 50;
-	private ImageIcon iconLogout = new ImageIcon(new ImageIcon("picture/logout-icon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-	private	ImageIcon iconUser = new ImageIcon(new ImageIcon("picture/user-icon.png").getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-	private ImageIcon iconThem = new ImageIcon(new ImageIcon("picture/add-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconXoa = new ImageIcon(new ImageIcon("picture/delete-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconSua = new ImageIcon(new ImageIcon("picture/update-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconLamMoi = new ImageIcon(new ImageIcon("picture/refesh-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconTim = new ImageIcon(new ImageIcon("picture/search-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconXemTatCa = new ImageIcon(new ImageIcon("picture/see_all-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	
+	private ImageIcon iconLogout = new ImageIcon(
+			new ImageIcon("picture/logout-icon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+	private ImageIcon iconUser = new ImageIcon(
+			new ImageIcon("picture/user-icon.png").getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+	private ImageIcon iconThem = new ImageIcon(
+			new ImageIcon("picture/add-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconXoa = new ImageIcon(
+			new ImageIcon("picture/delete-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconSua = new ImageIcon(
+			new ImageIcon("picture/update-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconLamMoi = new ImageIcon(
+			new ImageIcon("picture/refesh-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconTim = new ImageIcon(
+			new ImageIcon("picture/search-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconXemTatCa = new ImageIcon(
+			new ImageIcon("picture/see_all-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+
 	private JLabel lblMaKhachHang, lblTenKhachHang, lblCCCD, lblNgayHetHanCCCD, lblQuocTich;
 	private JTextField txtMaKhachHang, txtTenKhachHang, txtCCCD;
 	private JComboBox<String> cbQuocTich;
 	private DatePicker dpNgayHetHanCCCD;
-	
+
 	private DefaultTableModel tableModel;
 	private JTable table;
-	
-	private KhachHang_DAO kh_DAO = new KhachHang_DAO();
+
+	private KhachHang_DAO kh_DAO;
+
+	private ArrayList<KhachHang> list;
 	public GUI_QuanLyKhachHang() {
 		// Phần Left
-		
+
 //		setLayout(null);
 ////		JMenuBar menuBar = new JMenuBar();
 ////		menuBar.setBounds(0, 0, 300, 600);
@@ -137,12 +152,19 @@ public class GUI_QuanLyKhachHang extends JFrame {
 //		menuThongKe.setBounds(x, 400, w, h);
 //		pnlFull.add(menuThongKe);
 
-		
 //		btnLogout = new JButton("Log out");
 //		btnLogout.setIcon(iconLogout);
 //		btnLogout.setBounds(20, 530, 120, 30);
 //		pnlFull.add(btnLogout);
 //		setLayout(null);
+
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		kh_DAO = new KhachHang_DAO();
 
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
@@ -228,7 +250,7 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		itemThongKeDichVu = new JMenuItem("Thống kê dịch vụ");
 		itemThongKeKhachHang = new JMenuItem("Thống kê khách hàng");
 		itemThongKeNhanVien = new JMenuItem("Thống kê nhân viên");
-		
+
 		menuThongKe.add(itemThongKeDichVu);
 		menuThongKe.add(itemThongKeKhachHang);
 		menuThongKe.add(itemThongKeNhanVien);
@@ -245,131 +267,131 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		lblTitle.setBounds(350, 0, 500, 30);
 		lblTitle.setFont(new Font("Ariel", Font.BOLD, 25));
 		pnlFull.add(lblTitle);
-		
+
 		JPanel pnlThongTinKhachHang = new JPanel();
 		pnlThongTinKhachHang.setBorder(new TitledBorder(null, "Thông tin khách hàng"));
 		pnlThongTinKhachHang.setBounds(230, 40, 750, 200);
 		pnlFull.add(pnlThongTinKhachHang);
-		
+
 		pnlThongTinKhachHang.setLayout(null);
-		
-		
+
 		lblMaKhachHang = new JLabel("Mã khách hàng:");
 		lblMaKhachHang.setBounds(10, 20, 100, 30);
 		pnlThongTinKhachHang.add(lblMaKhachHang);
-		
+
 		txtMaKhachHang = new JTextField();
 		txtMaKhachHang.setEditable(false);
-        txtMaKhachHang.setBounds(110, 25, 250, 25);
-        pnlThongTinKhachHang.add(txtMaKhachHang);
-        txtMaKhachHang.setColumns(10);
-		
-        
-        lblTenKhachHang = new JLabel("Tên khách hàng:");
-        lblTenKhachHang.setBounds(10, 55, 100, 30);
-        pnlThongTinKhachHang.add(lblTenKhachHang);
-        
-        txtTenKhachHang = new JTextField();
-        txtTenKhachHang.setBounds(110, 60, 250, 25);
-        pnlThongTinKhachHang.add(txtTenKhachHang);
-        txtTenKhachHang.setColumns(10);
-        
-        lblQuocTich = new JLabel("Quốc tịch:");
-        lblQuocTich.setBounds(10, 90, 100, 30);
-        pnlThongTinKhachHang.add(lblQuocTich);
-        
-        cbQuocTich = new JComboBox<String>();
-        cbQuocTich.setBounds(110, 95, 160, 25);
+		txtMaKhachHang.setBounds(110, 25, 250, 25);
+		pnlThongTinKhachHang.add(txtMaKhachHang);
+		txtMaKhachHang.setColumns(10);
+
+		lblTenKhachHang = new JLabel("Tên khách hàng:");
+		lblTenKhachHang.setBounds(10, 55, 100, 30);
+		pnlThongTinKhachHang.add(lblTenKhachHang);
+
+		txtTenKhachHang = new JTextField();
+		txtTenKhachHang.setBounds(110, 60, 250, 25);
+		pnlThongTinKhachHang.add(txtTenKhachHang);
+		txtTenKhachHang.setColumns(10);
+
+		lblQuocTich = new JLabel("Quốc tịch:");
+		lblQuocTich.setBounds(10, 90, 100, 30);
+		pnlThongTinKhachHang.add(lblQuocTich);
+
+		cbQuocTich = new JComboBox<String>();
+		cbQuocTich.setBounds(110, 95, 160, 25);
 //        cbQuocTich.addItem("");
-//        cbQuocTich.addItem("Việt Nam");
-//        cbQuocTich.addItem("Nước ngoài");
-        pnlThongTinKhachHang.add(cbQuocTich);
-        
-        lblCCCD = new JLabel("CCCD/Hộ chiếu:");
-        lblCCCD.setBounds(390, 20, 100, 30);
-        pnlThongTinKhachHang.add(lblCCCD);
-        
-        txtCCCD = new JTextField();
-        txtCCCD.setBounds(490, 25, 250, 25);
-        pnlThongTinKhachHang.add(txtCCCD);
-        txtCCCD.setColumns(10);
-        
-        lblNgayHetHanCCCD = new JLabel("Ngày hết hạn CCCD: ");
-        lblNgayHetHanCCCD.setBounds(390, 55, 250, 30);
-        pnlThongTinKhachHang.add(lblNgayHetHanCCCD);
-        
-        dpNgayHetHanCCCD = new DatePicker(205);
-        dpNgayHetHanCCCD.setBounds(520, 60, 250, 25);
-        pnlThongTinKhachHang.add(dpNgayHetHanCCCD);
-        
-        // Thêm Button
-        btnThem = new JButton("Add");
-        btnThem.setBounds(130, 150, 100, 30);
-        btnThem.setIcon(iconThem);
-        pnlThongTinKhachHang.add(btnThem);
-        
-        btnXoa = new JButton("Delete");
-        btnXoa.setBounds(260, 150, 100, 30);
-        btnXoa.setIcon(iconXoa);
-        pnlThongTinKhachHang.add(btnXoa);
-        
-        btnSua = new JButton("Update");
-        btnSua.setBounds(390, 150, 100, 30);
-        btnSua.setIcon(iconSua);
-        pnlThongTinKhachHang.add(btnSua);
-        
-        btnLamMoi = new JButton("Refesh");
-        btnLamMoi.setBounds(520, 150, 100, 30);
-        btnLamMoi.setIcon(iconLamMoi);
-        pnlThongTinKhachHang.add(btnLamMoi);
-        
-        JPanel pnlDanhSachKhachHang = new JPanel();
+        cbQuocTich.addItem("Việt Nam");
+        cbQuocTich.addItem("Nước ngoài");
+		pnlThongTinKhachHang.add(cbQuocTich);
+
+		lblCCCD = new JLabel("CCCD/Hộ chiếu:");
+		lblCCCD.setBounds(390, 20, 100, 30);
+		pnlThongTinKhachHang.add(lblCCCD);
+
+		txtCCCD = new JTextField();
+		txtCCCD.setBounds(490, 25, 250, 25);
+		pnlThongTinKhachHang.add(txtCCCD);
+		txtCCCD.setColumns(10);
+
+		lblNgayHetHanCCCD = new JLabel("Ngày hết hạn CCCD: ");
+		lblNgayHetHanCCCD.setBounds(390, 55, 250, 30);
+		pnlThongTinKhachHang.add(lblNgayHetHanCCCD);
+
+		dpNgayHetHanCCCD = new DatePicker(205);
+		dpNgayHetHanCCCD.setBounds(520, 60, 250, 25);
+		pnlThongTinKhachHang.add(dpNgayHetHanCCCD);
+
+		// Thêm Button
+		btnThem = new JButton("Add");
+		btnThem.setBounds(130, 150, 100, 30);
+		btnThem.setIcon(iconThem);
+		pnlThongTinKhachHang.add(btnThem);
+
+		btnXoa = new JButton("Delete");
+		btnXoa.setBounds(260, 150, 100, 30);
+		btnXoa.setIcon(iconXoa);
+		pnlThongTinKhachHang.add(btnXoa);
+
+		btnSua = new JButton("Update");
+		btnSua.setBounds(390, 150, 100, 30);
+		btnSua.setIcon(iconSua);
+		pnlThongTinKhachHang.add(btnSua);
+
+		btnLamMoi = new JButton("Refesh");
+		btnLamMoi.setBounds(520, 150, 100, 30);
+		btnLamMoi.setIcon(iconLamMoi);
+		pnlThongTinKhachHang.add(btnLamMoi);
+
+		JPanel pnlDanhSachKhachHang = new JPanel();
 		pnlDanhSachKhachHang.setBorder(new TitledBorder(null, "Danh Sách Khách Hàng"));
 		pnlDanhSachKhachHang.setBounds(230, 250, 750, 360);
 		pnlFull.add(pnlDanhSachKhachHang);
-		
+
 		pnlDanhSachKhachHang.setLayout(null);
-		
+
 		lblTenKhachHang = new JLabel("Tên khách hàng:");
-        lblTenKhachHang.setBounds(60, 20, 100, 30);
-        pnlDanhSachKhachHang.add(lblTenKhachHang);
-        
-        txtTenKhachHang = new JTextField();
-        txtTenKhachHang.setBounds(170, 25, 250, 25);
-        txtTenKhachHang.setColumns(10);
-        pnlDanhSachKhachHang.add(txtTenKhachHang);
-        
-        btnTim = new JButton("Search");
-        btnTim.setBounds(430, 22, 100, 30);
-        btnTim.setIcon(iconTim);
-        pnlDanhSachKhachHang.add(btnTim);
-        
-        btnXemTatCa = new JButton("Watch All");
-        btnXemTatCa.setBounds(540, 22, 150, 30);
-        btnXemTatCa.setIcon(iconXemTatCa);
-        pnlDanhSachKhachHang.add(btnXemTatCa);
-        
-        JScrollPane scroll;
-        String[] headers = {"Mã khách hàng", "Tên khách hàng", "Quốc tịch", "CCCD/Hộ Chiếu", "Ngày hết hạn CCCD"};
-        
-        tableModel = new DefaultTableModel(headers, 0);
-        
-        pnlDanhSachKhachHang.add(scroll = new JScrollPane(table = new JTable(tableModel), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
-        scroll.setBounds(5, 60, 740, 300);
-        
-        
+		lblTenKhachHang.setBounds(60, 20, 100, 30);
+		pnlDanhSachKhachHang.add(lblTenKhachHang);
+
+		txtTenKhachHang = new JTextField();
+		txtTenKhachHang.setBounds(170, 25, 250, 25);
+		txtTenKhachHang.setColumns(10);
+		pnlDanhSachKhachHang.add(txtTenKhachHang);
+
+		btnTim = new JButton("Search");
+		btnTim.setBounds(430, 22, 100, 30);
+		btnTim.setIcon(iconTim);
+		pnlDanhSachKhachHang.add(btnTim);
+
+		btnXemTatCa = new JButton("Watch All");
+		btnXemTatCa.setBounds(540, 22, 150, 30);
+		btnXemTatCa.setIcon(iconXemTatCa);
+		pnlDanhSachKhachHang.add(btnXemTatCa);
+
+		JScrollPane scroll;
+		String[] headers = { "Mã khách hàng", "Tên khách hàng", "Quốc tịch", "CCCD/Hộ Chiếu", "Ngày hết hạn CCCD" };
+
+		tableModel = new DefaultTableModel(headers, 0);
+
+		pnlDanhSachKhachHang.add(scroll = new JScrollPane(table = new JTable(tableModel),
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
+				BorderLayout.CENTER);
+		scroll.setBounds(5, 60, 740, 300);
+
 //		setJMenuBar(menuBar);
 		pack();
 		setTitle("Quản Lý Khách Hàng");
 		setSize(1000, 650);
 		setLocationRelativeTo(null);
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		add(pnlFull);
-		pnlFull.setBackground(new Color(255,230,179));
-		
+		pnlFull.setBackground(new Color(255, 230, 179));
+
+		// Đọc dữ liệu từ database SQL vào JTable
+		docDuLieuVaoTable();
 	}
 
 	public static void main(String[] args) {
@@ -381,15 +403,19 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		});
 	}
 
-	
 	public void docDuLieuVaoTable() {
 		List<KhachHang> list = kh_DAO.getalltbKhachHang();
 		for (KhachHang kh : list) {
-			tableModel.addRow(new Object[] {
-					kh.getMaKhachHang(), kh.getTenKhachHang()
-			});
+			String date = formatDate(kh.getNgayHetHanCCCD());
+			tableModel.addRow(new Object[] { kh.getMaKhachHang(), kh.getTenKhachHang(), kh.getQuocTich(), kh.getCCCD(),
+					date });
 		}
 	}
+	
+	private String formatDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
+        return sdf.format(date);
+    }
 //	class Horizontal extends JMenu{
 //		public void HorizontalMenu(String label){
 //			JPopupMenu pm = getPopupMenu();
