@@ -5,6 +5,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
@@ -23,29 +28,44 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import connectDB.ConnectDB;
+import dao.LoaiPhong_DAO;
+import dao.Phong_DAO;
+import entity.LoaiPhong;
+import entity.Phong;
+
 public class GUI_QuanLyPhong extends JFrame {
-	
-	private JButton btnLogoprivate ;JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
+
+	private JButton btnLogoprivate;
+	JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu, itemDatPhong, itemQuanLyHoaDon, itemQuanLyPhong, itemQuanLyDichVu,
-	itemQuanLyKhachHang, itemQuanLyNhanVien,  itemThongKeDichVu, itemThongKeKhachHang, itemThongKeNhanVien;
+			itemQuanLyKhachHang, itemQuanLyNhanVien, itemThongKeDichVu, itemThongKeKhachHang, itemThongKeNhanVien;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
 			menuQuanLyNhanVien, menuThongKe, subMenu;
 
 	private int x = 0, w = 150, h = 50;
-	private ImageIcon iconLogout = new ImageIcon(new ImageIcon("picture/logout-icon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-	private	ImageIcon iconUser = new ImageIcon(new ImageIcon("picture/user-icon.png").getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-	private ImageIcon iconThem = new ImageIcon(new ImageIcon("picture/add-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconXoa = new ImageIcon(new ImageIcon("picture/delete-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconSua = new ImageIcon(new ImageIcon("picture/update-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconLamMoi = new ImageIcon(new ImageIcon("picture/refesh-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconTim = new ImageIcon(new ImageIcon("picture/search-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconXemTatCa = new ImageIcon(new ImageIcon("picture/see_all-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	
+	private ImageIcon iconLogout = new ImageIcon(
+			new ImageIcon("picture/logout-icon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+	private ImageIcon iconUser = new ImageIcon(
+			new ImageIcon("picture/user-icon.png").getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+	private ImageIcon iconThem = new ImageIcon(
+			new ImageIcon("picture/add-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconXoa = new ImageIcon(
+			new ImageIcon("picture/delete-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconSua = new ImageIcon(
+			new ImageIcon("picture/update-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconLamMoi = new ImageIcon(
+			new ImageIcon("picture/refesh-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconTim = new ImageIcon(
+			new ImageIcon("picture/search-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconXemTatCa = new ImageIcon(
+			new ImageIcon("picture/see_all-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+
 	private JLabel lblMaKhachHang, lblTenKhachHang, lblCCCD, lblNgayHetHanCCCD, lblQuocTich;
 	private JTextField txtMaKhachHang, txtTenKhachHang, txtCCCD;
 	private JComboBox<String> cbQuocTich;
 	private DatePicker dpNgayHetHanCCCD;
-	
+
 	private DefaultTableModel tableModel;
 	private JTable table;
 	private JPanel center;
@@ -69,9 +89,9 @@ public class GUI_QuanLyPhong extends JFrame {
 	private JTextField txtmaPH;
 	private DefaultTableModel tableModell;
 	private JTable jTablee;
-	
+
 	private JLabel lblDonGia;
-	
+
 	private JLabel lblMaLoaiPhong;
 	private Component txtTenLoaiPhong;
 	private JLabel lblTenLoaiPhong;
@@ -96,8 +116,22 @@ public class GUI_QuanLyPhong extends JFrame {
 	private JLabel lbltimmaloai;
 	private JTextField txttimmaloai;
 	private DefaultTableModel tableModels;
-	
+
+	private LoaiPhong_DAO lp_Dao;
+	private ArrayList<LoaiPhong_DAO> dsLP;
+	private Phong_DAO phong_Dao;
+	private ArrayList<Phong> dsPhong;
+
 	public GUI_QuanLyPhong() {
+
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		lp_Dao = new LoaiPhong_DAO();
+		phong_Dao = new Phong_DAO();
+
 		setLayout(null);
 
 		JPanel pnlFull = new JPanel();
@@ -184,7 +218,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		itemThongKeDichVu = new JMenuItem("Thống kê dịch vụ");
 		itemThongKeKhachHang = new JMenuItem("Thống kê khách hàng");
 		itemThongKeNhanVien = new JMenuItem("Thống kê nhân viên");
-		
+
 		menuThongKe.add(itemThongKeDichVu);
 		menuThongKe.add(itemThongKeKhachHang);
 		menuThongKe.add(itemThongKeNhanVien);
@@ -195,7 +229,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		btnLogout.setBounds(20, 550, 120, 30);
 		menuBar.add(btnLogout);
 		pnlFull.add(menuBar);
-		
+
 		setTitle("Quản Lý Nhân Viên");
 		setSize(1000, 650);
 		setLocationRelativeTo(null);
@@ -204,7 +238,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		setResizable(false);
 		add(pnlFull);
 		pnlFull.setBackground(new Color(255, 230, 179));
-		//right
+		// right
 		JLabel lblTitle = new JLabel("Quản Lý Phòng");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setBounds(350, 0, 500, 30);
@@ -222,7 +256,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		pnlThongTinLoaiPhong.add(lblMaLoaiPhong);
 
 		txtMaLoaiPhong = new JTextField();
-	//	txtMaLoaiPhong.setEditable(false);
+		// txtMaLoaiPhong.setEditable(false);
 		txtMaLoaiPhong.setBounds(110, 25, 200, 25);
 		pnlThongTinLoaiPhong.add(txtMaLoaiPhong);
 		txtMaLoaiPhong.setColumns(10);
@@ -243,7 +277,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		txtDonGia = new JTextField();
 		txtDonGia.setBounds(110, 95, 200, 25);
 		pnlThongTinLoaiPhong.add(txtDonGia);
-		//txtDonGia.setColumns(10);
+		// txtDonGia.setColumns(10);
 
 		// Thêm button
 		btnThem = new JButton("Add");
@@ -265,48 +299,49 @@ public class GUI_QuanLyPhong extends JFrame {
 		btnLamMoi.setBounds(200, 200, 100, 30);
 		btnLamMoi.setIcon(iconLamMoi);
 		pnlThongTinLoaiPhong.add(btnLamMoi);
-		//danh sach loai phong
+		// danh sach loai phong
 		JPanel pnldanhsachloaiphong = new JPanel();
 		pnldanhsachloaiphong.setBorder(new TitledBorder(null, "Danh Sách Loại Phòng"));
 		pnldanhsachloaiphong.setBounds(560, 40, 425, 250);
 		pnlFull.add(pnldanhsachloaiphong);
-		
+
 		pnldanhsachloaiphong.setLayout(null);
-		
+
 		lbltimmaloai = new JLabel("Mã loại phòng:");
-        lbltimmaloai.setBounds(5, 22, 100, 30);
-        pnldanhsachloaiphong.add(lbltimmaloai);
-        
-        txttimmaloai = new JTextField();
-        txttimmaloai.setBounds(90, 27, 100, 25);
-        txttimmaloai.setColumns(10);
-        pnldanhsachloaiphong.add(txttimmaloai);
-        
-        btnTim = new JButton("Search");
-        btnTim.setBounds(194, 25, 100, 30);
-        btnTim.setIcon(iconTim);
-        pnldanhsachloaiphong.add(btnTim);
-        
-        btnXemTatCa = new JButton("Watch All");
-        btnXemTatCa.setBounds(300, 25, 120, 30);
-        btnXemTatCa.setIcon(iconXemTatCa);
-        pnldanhsachloaiphong.add(btnXemTatCa);
-        
-        JScrollPane scroll;
-        String[] headers = {"Mã Loại phòng", "Tên Loại Phòng", "Đơn Giá"};
-        
-        tableModel = new DefaultTableModel(headers, 0);
-        
-        pnldanhsachloaiphong.add(scroll = new JScrollPane(table = new JTable(tableModel), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
-        scroll.setBounds(5, 60, 417, 186);
-        //quan ly phong
-        JPanel pnlThongTinPhong = new JPanel();
+		lbltimmaloai.setBounds(5, 22, 100, 30);
+		pnldanhsachloaiphong.add(lbltimmaloai);
+
+		txttimmaloai = new JTextField();
+		txttimmaloai.setBounds(90, 27, 100, 25);
+		txttimmaloai.setColumns(10);
+		pnldanhsachloaiphong.add(txttimmaloai);
+
+		btnTim = new JButton("Search");
+		btnTim.setBounds(194, 25, 100, 30);
+		btnTim.setIcon(iconTim);
+		pnldanhsachloaiphong.add(btnTim);
+
+		btnXemTatCa = new JButton("Watch All");
+		btnXemTatCa.setBounds(300, 25, 120, 30);
+		btnXemTatCa.setIcon(iconXemTatCa);
+		pnldanhsachloaiphong.add(btnXemTatCa);
+
+		JScrollPane scroll;
+		String[] headers = { "Mã Loại phòng", "Tên Loại Phòng", "Đơn Giá" };
+
+		tableModel = new DefaultTableModel(headers, 0);
+
+		pnldanhsachloaiphong.add(scroll = new JScrollPane(table = new JTable(tableModel),
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
+				BorderLayout.CENTER);
+		scroll.setBounds(5, 60, 417, 186);
+		// quan ly phong
+		JPanel pnlThongTinPhong = new JPanel();
 		pnlThongTinPhong.setBorder(new TitledBorder(null, "Thông tin  phòng"));
 		pnlThongTinPhong.setBounds(210, 290, 350, 320);
 		pnlFull.add(pnlThongTinPhong);
 
-		 pnlThongTinPhong.setLayout(null);
+		pnlThongTinPhong.setLayout(null);
 
 		lblMaPhong = new JLabel("Mã phòng:");
 		lblMaPhong.setBounds(10, 40, 100, 30);
@@ -332,9 +367,16 @@ public class GUI_QuanLyPhong extends JFrame {
 		cbcloaiphong = new JComboBox<String>();
 		cbcloaiphong.setBounds(120, 115, 160, 25);
 //        cbBoPhan.addItem("");
-		
-		cbcloaiphong.addItem("Giường đơn");
-		cbcloaiphong.addItem("Giường đôi");
+
+//		cbcloaiphong.addItem("Giường đơn");
+//		cbcloaiphong.addItem("Giường đôi");
+//		
+
+		ArrayList<LoaiPhong> listPB = lp_Dao.getallLoaiPhong();
+		for (LoaiPhong p : listPB) {
+			cbcloaiphong.addItem(p.getTenLoaiPhong());
+		}
+
 		pnlThongTinPhong.add(cbcloaiphong);
 		lbltinhtrang = new JLabel("Tình trạng phòng:");
 		lbltinhtrang.setBounds(10, 140, 120, 30);
@@ -346,44 +388,43 @@ public class GUI_QuanLyPhong extends JFrame {
 		cbctinhtrang.addItem("Đã được đặt");
 		cbctinhtrang.addItem("Đang cho thuê");
 		pnlThongTinPhong.add(cbctinhtrang);
-		//danh sach phong
+		// danh sach phong
 		JPanel pnldanhsachphong = new JPanel();
 		pnldanhsachphong.setBorder(new TitledBorder(null, "Danh Sách Phòng"));
 		pnldanhsachphong.setBounds(560, 290, 425, 320);
 		pnlFull.add(pnldanhsachphong);
-		
-		pnldanhsachphong.setLayout(null);
-		
-		lbltimmaphong = new JLabel("Mã Phòng:");
-        lbltimmaphong.setBounds(5, 22, 100, 30);
-        pnldanhsachphong.add(lbltimmaphong);
-        
-        txttimphong = new JTextField();
-        txttimphong.setBounds(85, 27, 100, 25);
-        txttimphong.setColumns(10);
-        pnldanhsachphong.add(txttimphong);
-        
-        btnTims = new JButton("Search");
-        btnTims.setBounds(190, 25, 100, 30);
-        btnTims.setIcon(iconTim);
-        pnldanhsachphong.add(btnTims);
-        
-        btnXemTatCas = new JButton("Watch All");
-        btnXemTatCas.setBounds(300, 25, 120, 30);
-        btnXemTatCas.setIcon(iconXemTatCa);
-        pnldanhsachphong.add(btnXemTatCas);
-        
-        JScrollPane scrolls;
-        String[] headerss = {"Mã  phòng", "Vị Trí", "Tình Trạng","Loại Phòng"};
-        
-        tableModels = new DefaultTableModel(headerss, 0);
-        
-        pnldanhsachphong.add(scrolls = new JScrollPane(table = new JTable(tableModels), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
-        scrolls.setBounds(5, 60, 417, 255);
-		
 
-		
+		pnldanhsachphong.setLayout(null);
+
+		lbltimmaphong = new JLabel("Mã Phòng:");
+		lbltimmaphong.setBounds(5, 22, 100, 30);
+		pnldanhsachphong.add(lbltimmaphong);
+
+		txttimphong = new JTextField();
+		txttimphong.setBounds(85, 27, 100, 25);
+		txttimphong.setColumns(10);
+		pnldanhsachphong.add(txttimphong);
+
+		btnTims = new JButton("Search");
+		btnTims.setBounds(190, 25, 100, 30);
+		btnTims.setIcon(iconTim);
+		pnldanhsachphong.add(btnTims);
+
+		btnXemTatCas = new JButton("Watch All");
+		btnXemTatCas.setBounds(300, 25, 120, 30);
+		btnXemTatCas.setIcon(iconXemTatCa);
+		pnldanhsachphong.add(btnXemTatCas);
+
+		JScrollPane scrolls;
+		String[] headerss = { "Mã  phòng", "Vị Trí", "Tình Trạng", "Loại Phòng" };
+
+		tableModels = new DefaultTableModel(headerss, 0);
+
+		pnldanhsachphong.add(scrolls = new JScrollPane(table = new JTable(tableModels),
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
+				BorderLayout.CENTER);
+		scrolls.setBounds(5, 60, 417, 255);
+
 //		txtDonGia.setColumns(10);
 
 		// Thêm button
@@ -410,11 +451,39 @@ public class GUI_QuanLyPhong extends JFrame {
 		btnXemLichs.setBounds(75, 280, 200, 30);
 		btnXemLichs.setIcon(iconXemTatCa);
 		pnlThongTinPhong.add(btnXemLichs);
-		
+
+		docDuLieuLPVaoTable();
+		docDuLieuPhongVaoTable();
 	}
+
 	public static void main(String[] args) {
 		new GUI_QuanLyPhong().setVisible(true);
 	}
 
+	public void docDuLieuLPVaoTable() {
+		List<LoaiPhong> dsLoaiPhong = lp_Dao.getallLoaiPhong();
+		for (LoaiPhong lp : dsLoaiPhong) {
+			tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
+		}
+	}
+
+	public void docDuLieuPhongVaoTable() {
+		List<Phong> dsPhong = phong_Dao.getallPhong();
+		List<LoaiPhong> lp_DAO = lp_Dao.getallLoaiPhong();
+		for (Phong p : dsPhong) {
+
+			int maLPhong = p.getLoaiPhong().getMaLoaiPhong();
+			String tenLPhong = "";
+			for (LoaiPhong i : lp_DAO) {
+				if (i.getMaLoaiPhong() == maLPhong) {
+					tenLPhong = i.getTenLoaiPhong();
+					break;
+				}
+			}
+
+			tableModels.addRow(new Object[] { p.getMaPhong(), p.getViTri(),
+					p.getTinhTrang() == 0 ? "Trống" : p.getTinhTrang() == 1 ? "Đã được đặt" : "Đang ở", tenLPhong });
+		}
+	}
 
 }
