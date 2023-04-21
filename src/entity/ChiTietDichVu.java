@@ -72,7 +72,7 @@ public class ChiTietDichVu {
 	public ChiTietDichVu(ResultSet rs) throws SQLException {
 		KhachHang kh = new KhachHang(rs.getString("MaKH"), rs.getString("TenKH"), rs.getString("QuocTich"),rs.getString("CCCD"), rs.getDate("NgayHetHanCCCD"));
 		HoaDonDichVu hoaDonDichVu = new HoaDonDichVu(rs.getInt("MaHDDV"), rs.getInt("SoLuong"), rs.getDate("NgayGioDat"), kh);
-		DichVu dv = new DichVu(rs.getInt("MaDV"), rs.getString("TenDV"), rs.getInt("SoLuong"),rs.getDouble("DonGia"));
+		DichVu dv = new DichVu(rs.getInt("MaDV"), rs.getString("TenDV"), rs.getDouble("DonGia"));
 
 		setSoLuong(rs.getInt("SoLuong"));
 		this.ngayGioDat = rs.getDate("NgayGioDat");

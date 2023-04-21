@@ -14,9 +14,11 @@ import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,9 +42,14 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import connectDB.ConnectDB;
+import dao.ChiTietDichVu_DAO;
+import dao.DichVu_DAO;
 import dao.HoaDonDichVu_DAO;
+import entity.ChiTietDichVu;
+import entity.DichVu;
 import entity.HoaDonDichVu;
 import entity.KhachHang;
+import entity.LoaiPhong;
 
 public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
@@ -97,8 +104,11 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 	private JMenuItem itemQuanLyPhong;
 	private JMenuItem itemQuanLyDichVu;
 	private JMenuItem itemQuanLyKhachHang;
-	
+	ArrayList<DichVu> dsdv ;
 	private HoaDonDichVu_DAO HDDV_dao;
+	private ChiTietDichVu_DAO CTDV_dao;
+	private DichVu_DAO DV_dao;
+	private int maDichVu;
 
 	public GUI_QuanLyHoaDonDichVu() {
 		// Phần Left
@@ -109,6 +119,8 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 		HDDV_dao = new HoaDonDichVu_DAO();
+		DV_dao =new DichVu_DAO();
+		CTDV_dao =new ChiTietDichVu_DAO();
 		
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
@@ -353,6 +365,7 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 		pnlFull.setBackground(new Color(255, 230, 179));
 		
 		docDuLieuVaoTable();
+		DocDuLieuVaoTableChiTietDichVu();
 	}
 
 	public static void main(String[] args) {
@@ -370,14 +383,76 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
         return sdf.format(date);
     }
+	public void DocDuLieuVaoTableChiTietDichVu() {
+		
+		List<HoaDonDichVu> list = HDDV_dao.getalltbHoaDonDichVu();
+		List<ChiTietDichVu> listctdv = CTDV_dao.getallChiTietDichVu();
+		List<DichVu> listdv =DV_dao.getalltbDichVu();
+		for (ChiTietDichVu ctdv : listctdv) {
+			int maDichVu = ctdv.getDichVu().getMaDichVu();
+			String tenDichVu = "";
+			double dongia=ctdv.getDichVu().getDonGia();
+			
+			
+			for (DichVu dv : listdv) {
+				if (dv.getMaDichVu() == maDichVu) {
+					tenDichVu = dv.getTenDichVu();
+					dongia =dv.getDonGia();
+					break;
+				}
+			}
+			
+			
+			String dates = formatDate(ctdv.getNgayGioDat());
+				
+			
+			int maHoaDon = ctdv.getHoaDonDichVu().getMaHoaDonDichVu();
+			
+			
+			tableModel.addRow(new Object[] { maDichVu,tenDichVu ,ctdv.getSoLuong(),dongia,dates, maHoaDon});
+			//updateComboboxData();
+		}
+		
+	}
+// private void updateComboboxData() {
+//		
+//		int n = dsdv.size();
+//		String[] items = new String[n];
+//		int i = 0;
+//		for ( DichVu  dv: DV_dao.getalltbDichVu()) {
+//			items[i] = dv.getTenDichVu();
+//			i++;
+//		}
+//		jcbDichVu.setModel(new DefaultComboBoxModel<String>(items));
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		if(o.equals(btnThem)) {
-			
-			
-		}
+		
+//		if(o.equals(btnThem)) {
+//			int ma = jcbDichVu.getSelectedIndex();
+//			int soluong =Integer.parseInt(txtSoLuong.getText());
+//			
+//			double dongia = Double.parseDouble(txtGia.getText());
+//			long millis = System.currentTimeMillis();
+//			Date date = new Date(millis);
+//			
+//			ChiTietDichVu ctdv = new ChiTietDichVu(new DichVu(ma),(new HoaDonDichVu(ma),soluong,date);
+//			
+//			
+//			
+//		}else if (o.equals(btnLamMoi)) {			
+//			txtSoLuong.setText("");
+//			txtGia.setText("");
+//			
+//		}
+        
+//		
+		
+		
+		
+		
 	}
 	
 }

@@ -7,7 +7,7 @@ import java.util.Objects;
 public class DichVu {
 	private int maDichVu;
 	private String tenDichVu;
-	private int soLuong;
+
 	private double donGia;
 	public DichVu() {
 		super();
@@ -16,11 +16,11 @@ public class DichVu {
 		super();
 		this.maDichVu = maDichVu;
 	}
-	public DichVu(int maDichVu, String tenDichVu, int soLuong, double donGia) {
+	public DichVu(int maDichVu, String tenDichVu,  double donGia) {
 		super();
 		setMaDichVu(maDichVu);
 		setTenDichVu(tenDichVu);
-		setSoLuong(soLuong);
+		
 		setDonGia(donGia);
 	}
 	public int getMaDichVu() {
@@ -41,14 +41,8 @@ public class DichVu {
 			this.tenDichVu = "Chưa cập nhật";
 		}
 	}
-	public int getSoLuong() {
-		return soLuong;
-	}
-	public void setSoLuong(int soLuong) {
-		if(soLuong > 0) {
-			this.donGia = donGia;
-		}
-	}
+	
+	
 	public double getDonGia() {
 		return donGia;
 	}
@@ -61,14 +55,14 @@ public class DichVu {
 	}
 	
 	public DichVu(ResultSet rs) throws SQLException {
-		this(rs.getInt("MaDV"), rs.getString("TenDV"), rs.getInt("SoLuong"),rs.getDouble("DonGia"));
+		this(rs.getInt("MaDV"), rs.getString("TenDV"), rs.getDouble("DonGia"));
 	}
 	
 	
 	
 	@Override
 	public String toString() {
-		return "DichVu [maDichVu=" + maDichVu + ", tenDichVu=" + tenDichVu + ", soLuong=" + soLuong + ", donGia="
+		return "DichVu [maDichVu=" + maDichVu + ", tenDichVu=" + tenDichVu + ",  donGia="
 				+ donGia + "]";
 	}
 	@Override
