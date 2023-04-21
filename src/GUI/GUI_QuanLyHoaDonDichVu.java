@@ -9,6 +9,12 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.Menu;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -33,7 +39,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-public class GUI_QuanLyHoaDonDichVu extends JFrame {
+import connectDB.ConnectDB;
+import dao.HoaDonDichVu_DAO;
+import entity.HoaDonDichVu;
+import entity.KhachHang;
+
+public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
@@ -86,10 +97,19 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame {
 	private JMenuItem itemQuanLyPhong;
 	private JMenuItem itemQuanLyDichVu;
 	private JMenuItem itemQuanLyKhachHang;
+	
+	private HoaDonDichVu_DAO HDDV_dao;
 
 	public GUI_QuanLyHoaDonDichVu() {
 		// Phần Left
 
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		HDDV_dao = new HoaDonDichVu_DAO();
+		
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
 		pnlFull.setBounds(0, 0, 1000, 650);
@@ -187,7 +207,7 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame {
 		pnlFull.add(menuBar);
 
 		// Phần Right
-		JLabel lblTitle = new JLabel("Quản Lý Đặt Hàng");
+		JLabel lblTitle = new JLabel("Quản Lý Hóa Đơn Dịch Vụ");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setBounds(350, 0, 500, 30);
 		lblTitle.setFont(new Font("Ariel", Font.BOLD, 25));
@@ -331,12 +351,33 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame {
 //		setResizable(false);
 		add(pnlFull);
 		pnlFull.setBackground(new Color(255, 230, 179));
-
+		
+		docDuLieuVaoTable();
 	}
 
 	public static void main(String[] args) {
 		new GUI_QuanLyHoaDonDichVu().setVisible(true);
 
 	}
+	public void docDuLieuVaoTable() {
+		List<HoaDonDichVu> list = HDDV_dao.getalltbHoaDonDichVu();
+		for (HoaDonDichVu hddv : list) {
+			String date = formatDate(hddv.getNgayGioDat());
+			tableModelHD.addRow(new Object[] { hddv.getMaHoaDonDichVu(), hddv.getKhachHang().getMaKhachHang(),date, hddv.getTinhTrang()});
+		}
+	}
+	private String formatDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
+        return sdf.format(date);
+    }
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if(o.equals(btnThem)) {
+			
+			
+		}
+	}
+	
 }

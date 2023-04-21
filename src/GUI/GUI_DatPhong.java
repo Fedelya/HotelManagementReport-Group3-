@@ -9,6 +9,10 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.Menu;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -32,6 +36,11 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+
+import connectDB.ConnectDB;
+import dao.HoaDonPhong_DAO;
+import entity.HoaDonDichVu;
+import entity.HoaDonPhong;
 
 public class GUI_DatPhong extends JFrame {
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
@@ -81,9 +90,19 @@ public class GUI_DatPhong extends JFrame {
 	private JMenuItem itemQuanLyPhong;
 	private JMenuItem itemQuanLyDichVu;
 	private JMenuItem itemQuanLyKhachHang;
+	
+	private HoaDonPhong_DAO hdp_dao;
 
 	public GUI_DatPhong() {
-
+		
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		hdp_dao = new HoaDonPhong_DAO();
+		
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
 		pnlFull.setBounds(0, 0, 1000, 650);
@@ -353,7 +372,7 @@ public class GUI_DatPhong extends JFrame {
 
 //		setJMenuBar(menuBar);
 		pack();
-		setTitle("Quản Lý Khách Hàng");
+		setTitle("Quản Lý Đặt Phòng");
 		setSize(1000, 650);
 		setLocationRelativeTo(null);
 
@@ -361,12 +380,26 @@ public class GUI_DatPhong extends JFrame {
 //		setResizable(false);
 		add(pnlFull);
 		pnlFull.setBackground(new Color(255, 230, 179));
-
+		
+		docDuLieuVaoTable();
 	}
 
 	public static void main(String[] args) {
 		new GUI_DatPhong().setVisible(true);
 
 	}
-
+	
+	public void docDuLieuVaoTable() {
+		List<HoaDonPhong> list = hdp_dao.getalltbHoaDonPhong();
+		for (HoaDonPhong hdp : list) {
+			String date1 = formatDate(hdp.getNgayGioNhan());
+			String date2 = formatDate(hdp.getNgayGioTra());
+			tableModelHD.addRow(new Object[] { hdp.getMaHoaDon(), hdp.getKhachHang().getMaKhachHang(),hdp.getKhachHang().getTenKhachHang(),
+					hdp.getPhong().getMaPhong(),hdp.getPhong().getLoaiPhong(),date1,date2,hdp.getTinhTrang()});
+		}
+	}
+	private String formatDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
+        return sdf.format(date);
+    }
 }
