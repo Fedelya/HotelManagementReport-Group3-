@@ -2,12 +2,15 @@ package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
-import java.sql.Date;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.sql.SQLDataException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -32,12 +36,12 @@ import connectDB.ConnectDB;
 import dao.LoaiPhong_DAO;
 import dao.Phong_DAO;
 import entity.LoaiPhong;
+
 import entity.Phong;
 
-public class GUI_QuanLyPhong extends JFrame {
+public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionListener {
 
-	private JButton btnLogoprivate;
-	JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
+	JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa, btnThemPhong;
 	private JMenuItem itemTrangChu, itemDatPhong, itemQuanLyHoaDon, itemQuanLyPhong, itemQuanLyDichVu,
 			itemQuanLyKhachHang, itemQuanLyNhanVien, itemThongKeDichVu, itemThongKeKhachHang, itemThongKeNhanVien;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
@@ -61,49 +65,21 @@ public class GUI_QuanLyPhong extends JFrame {
 	private ImageIcon iconXemTatCa = new ImageIcon(
 			new ImageIcon("picture/see_all-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
 
-	private JLabel lblMaKhachHang, lblTenKhachHang, lblCCCD, lblNgayHetHanCCCD, lblQuocTich;
-	private JTextField txtMaKhachHang, txtTenKhachHang, txtCCCD;
-	private JComboBox<String> cbQuocTich;
-	private DatePicker dpNgayHetHanCCCD;
-
 	private DefaultTableModel tableModel;
 	private JTable table;
-	private JPanel center;
-	private JPanel centerleft;
-	private JPanel centerright;
-	private JTextField txtmaloaiPhong;
-	private JTextField txttenloaiphong;
-	private JTextField txtdongia;
-	private JLabel lbShowMessagesLP;
-	private JButton btnlammoi;
-	private JButton btnXem;
-	private JTextField txttenloaiPhong;
-	private JTable jTable;
-	private JTextField txtmaPhong;
-	private JTextField txtviTri;
-	private JButton btnthem;
-	private JButton btnxoa;
-	private JButton btnLammoi;
-	private JButton btnxemlich;
-	private JButton btnsua;
-	private JTextField txtmaPH;
-	private DefaultTableModel tableModell;
-	private JTable jTablee;
-
+	private JTextField txtDonGia;
 	private JLabel lblDonGia;
-
 	private JLabel lblMaLoaiPhong;
-	private Component txtTenLoaiPhong;
+	private JTextField txtTenLoaiPhong;
 	private JLabel lblTenLoaiPhong;
 	private JTextField txtMaLoaiPhong;
-	private Component txtDonGia;
 	private JLabel lblMaPhong;
 	private JTextField txtMaPhong;
 	private JLabel lblvitri;
 	private JTextField txtvitri;
 	private JComboBox<String> cbcloaiphong;
 	private JComboBox<String> cbctinhtrang;
-	private AbstractButton btnLamMois;
+	private JButton btnLamMois;
 	private AbstractButton btnSuas;
 	private JButton btnXemLichs;
 	private AbstractButton btnXoas;
@@ -121,6 +97,7 @@ public class GUI_QuanLyPhong extends JFrame {
 	private ArrayList<LoaiPhong_DAO> dsLP;
 	private Phong_DAO phong_Dao;
 	private ArrayList<Phong> dsPhong;
+	private JTable table1;
 
 	public GUI_QuanLyPhong() {
 
@@ -140,7 +117,6 @@ public class GUI_QuanLyPhong extends JFrame {
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(7, 0, 200, 650);
-//		menuBar.setLayout(new GridLayout(0, 1));
 		menuBar.setLayout(null);
 
 		JLabel lblUser = new JLabel("Tên Admin");
@@ -150,38 +126,24 @@ public class GUI_QuanLyPhong extends JFrame {
 
 		menuTrangChu = new JMenu("Trang Chủ");
 
-//		menuTrangChu.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuTrangChu.setVerticalTextPosition(SwingConstants.BOTTOM);
 		menuTrangChu.setBounds(x, 100, w, h);
-//		menuBar.add(menuTrangChu);
 		itemTrangChu = new JMenuItem("Trang chủ");
 		menuTrangChu.add(itemTrangChu);
 		menuBar.add(menuTrangChu);
 
-//            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
-//            bar.add(sep1, "growy");
 		menuDatPhong = new JMenu("Đặt phòng");
-//		menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuDatPhong);
 		menuDatPhong.setBounds(x, 160, w, h);
 		itemDatPhong = new JMenuItem("Đặt phòng");
 		menuDatPhong.add(itemDatPhong);
 		menuBar.add(menuDatPhong);
 
 		menuQuanLyHoaDon = new JMenu("Quản Lý Hóa Đơn");
-//		menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyHoaDon);
 		menuQuanLyHoaDon.setBounds(x, 220, w, h);
 		itemQuanLyHoaDon = new JMenuItem("Quản lý hóa đơn dịch vụ");
 		menuQuanLyHoaDon.add(itemQuanLyHoaDon);
 		menuBar.add(menuQuanLyHoaDon);
 
 		menuQuanLyDichVu = new JMenu("Quản Lý Dịch Vụ");
-//		menuQuanLyDichVu.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyDichVu.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyDichVu);
 		menuQuanLyDichVu.setBounds(x, 280, w, h);
 		itemQuanLyPhong = new JMenuItem("Quản lý phòng");
 		itemQuanLyDichVu = new JMenuItem("Quản lý dịch vụ");
@@ -189,31 +151,19 @@ public class GUI_QuanLyPhong extends JFrame {
 		menuQuanLyDichVu.add(itemQuanLyDichVu);
 		menuBar.add(menuQuanLyDichVu);
 
-//            JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
-//            bar.add(sep2, "growy");
-
 		menuQuanLyKhachHang = new JMenu("Quản Lý Khách Hàng");
-//		menuQuanLyKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyKhachHang.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyKhachHang);
 		menuQuanLyKhachHang.setBounds(x, 340, w, h);
 		itemQuanLyKhachHang = new JMenuItem("Quản lý khách hàng");
 		menuQuanLyKhachHang.add(itemQuanLyKhachHang);
 		menuBar.add(menuQuanLyKhachHang);
 
 		menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
-//		menuQuanLyNhanVien.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyNhanVien.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyNhanVien);
 		menuQuanLyNhanVien.setBounds(x, 400, w, h);
 		itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
 		menuQuanLyNhanVien.add(itemQuanLyNhanVien);
 		menuBar.add(menuQuanLyNhanVien);
 
 		JMenu menuThongKe = new JMenu("Thống kê");
-//		menuThongKe.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuThongKe.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuThongKe);
 		menuThongKe.setBounds(x, 460, w, h);
 		itemThongKeDichVu = new JMenuItem("Thống kê dịch vụ");
 		itemThongKeKhachHang = new JMenuItem("Thống kê khách hàng");
@@ -230,7 +180,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		menuBar.add(btnLogout);
 		pnlFull.add(menuBar);
 
-		setTitle("Quản Lý Nhân Viên");
+		setTitle("Quản Lý Phòng");
 		setSize(1000, 650);
 		setLocationRelativeTo(null);
 
@@ -246,7 +196,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		pnlFull.add(lblTitle);
 		JPanel pnlThongTinLoaiPhong = new JPanel();
 		pnlThongTinLoaiPhong.setBorder(new TitledBorder(null, "Thông tin loại phòng"));
-		pnlThongTinLoaiPhong.setBounds(210, 40, 350, 250);
+		pnlThongTinLoaiPhong.setBounds(210, 40, 347, 250);
 		pnlFull.add(pnlThongTinLoaiPhong);
 
 		pnlThongTinLoaiPhong.setLayout(null);
@@ -338,7 +288,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		// quan ly phong
 		JPanel pnlThongTinPhong = new JPanel();
 		pnlThongTinPhong.setBorder(new TitledBorder(null, "Thông tin  phòng"));
-		pnlThongTinPhong.setBounds(210, 290, 350, 320);
+		pnlThongTinPhong.setBounds(210, 295, 347, 310);
 		pnlFull.add(pnlThongTinPhong);
 
 		pnlThongTinPhong.setLayout(null);
@@ -371,11 +321,7 @@ public class GUI_QuanLyPhong extends JFrame {
 //		cbcloaiphong.addItem("Giường đơn");
 //		cbcloaiphong.addItem("Giường đôi");
 //		
-
-		ArrayList<LoaiPhong> listPB = lp_Dao.getallLoaiPhong();
-		for (LoaiPhong p : listPB) {
-			cbcloaiphong.addItem(p.getTenLoaiPhong());
-		}
+		loadDSLPhong();
 
 		pnlThongTinPhong.add(cbcloaiphong);
 		lbltinhtrang = new JLabel("Tình trạng phòng:");
@@ -391,7 +337,7 @@ public class GUI_QuanLyPhong extends JFrame {
 		// danh sach phong
 		JPanel pnldanhsachphong = new JPanel();
 		pnldanhsachphong.setBorder(new TitledBorder(null, "Danh Sách Phòng"));
-		pnldanhsachphong.setBounds(560, 290, 425, 320);
+		pnldanhsachphong.setBounds(560, 295, 425, 310);
 		pnlFull.add(pnldanhsachphong);
 
 		pnldanhsachphong.setLayout(null);
@@ -420,7 +366,7 @@ public class GUI_QuanLyPhong extends JFrame {
 
 		tableModels = new DefaultTableModel(headerss, 0);
 
-		pnldanhsachphong.add(scrolls = new JScrollPane(table = new JTable(tableModels),
+		pnldanhsachphong.add(scrolls = new JScrollPane(table1 = new JTable(tableModels),
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
 				BorderLayout.CENTER);
 		scrolls.setBounds(5, 60, 417, 255);
@@ -428,36 +374,60 @@ public class GUI_QuanLyPhong extends JFrame {
 //		txtDonGia.setColumns(10);
 
 		// Thêm button
-		JButton btnThems = new JButton("Add");
-		btnThems.setBounds(50, 180, 100, 30);
-		btnThems.setIcon(iconThem);
-		pnlThongTinPhong.add(btnThems);
+		btnThemPhong = new JButton("Add");
+		btnThemPhong.setBounds(50, 200, 100, 30);
+		btnThemPhong.setIcon(iconThem);
+		pnlThongTinPhong.add(btnThemPhong);
 
 		btnXoas = new JButton("Delete");
-		btnXoas.setBounds(200, 180, 100, 30);
+		btnXoas.setBounds(200, 200, 100, 30);
 		btnXoas.setIcon(iconXoa);
 		pnlThongTinPhong.add(btnXoas);
 
 		btnSuas = new JButton("Update");
-		btnSuas.setBounds(50, 230, 100, 30);
+		btnSuas.setBounds(50, 250, 100, 30);
 		btnSuas.setIcon(iconSua);
 		pnlThongTinPhong.add(btnSuas);
 
 		btnLamMois = new JButton("Refesh");
-		btnLamMois.setBounds(200, 230, 100, 30);
+		btnLamMois.setBounds(200, 250, 100, 30);
 		btnLamMois.setIcon(iconLamMoi);
 		pnlThongTinPhong.add(btnLamMois);
-		btnXemLichs = new JButton("Xem Lich Đặt");
-		btnXemLichs.setBounds(75, 280, 200, 30);
-		btnXemLichs.setIcon(iconXemTatCa);
-		pnlThongTinPhong.add(btnXemLichs);
+//		btnXemLichs = new JButton("Xem Lich Đặt");
+//		btnXemLichs.setBounds(75, 280, 200, 30);
+//		btnXemLichs.setIcon(iconXemTatCa);
+//		pnlThongTinPhong.add(btnXemLichs);
 
 		docDuLieuLPVaoTable();
 		docDuLieuPhongVaoTable();
+
+		table.addMouseListener(this);
+		table1.addMouseListener(this);
+		btnTim.addActionListener(this);
+		btnTims.addActionListener(this);
+		btnXemTatCa.addActionListener(this);
+		btnXemTatCas.addActionListener(this);
+		btnThem.addActionListener(this);
+		btnThemPhong.addActionListener(this);
+		btnLamMois.addActionListener(this);
+		btnLamMoi.addActionListener(this);
+		btnLogout.addActionListener(this);
+//		btnXemLichs.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnSuas.addActionListener(this);
+		btnXoa.addActionListener(this);
+		btnXoas.addActionListener(this);
 	}
 
 	public static void main(String[] args) {
 		new GUI_QuanLyPhong().setVisible(true);
+	}
+
+	public void loadDSLPhong() {
+		ArrayList<LoaiPhong> listPB = lp_Dao.getallLoaiPhong();
+		for (LoaiPhong p : listPB) {
+			cbcloaiphong.addItem(p.getTenLoaiPhong());
+		}
 	}
 
 	public void docDuLieuLPVaoTable() {
@@ -465,6 +435,13 @@ public class GUI_QuanLyPhong extends JFrame {
 		for (LoaiPhong lp : dsLoaiPhong) {
 			tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
 		}
+	}
+
+	private LoaiPhong revertLP() {
+		int ma = Integer.parseInt(txtMaLoaiPhong.getText());
+		String ten = txtTenLoaiPhong.getText();
+		double gia = Double.parseDouble(txtDonGia.getText());
+		return new LoaiPhong(ma, ten, gia);
 	}
 
 	public void docDuLieuPhongVaoTable() {
@@ -482,8 +459,287 @@ public class GUI_QuanLyPhong extends JFrame {
 			}
 
 			tableModels.addRow(new Object[] { p.getMaPhong(), p.getViTri(),
-					p.getTinhTrang() == 0 ? "Trống" : p.getTinhTrang() == 1 ? "Đã được đặt" : "Đang ở", tenLPhong });
+					p.getTinhTrang() == 0 ? "Trống" : p.getTinhTrang() == 1 ? "Đã được đặt" : "Đang cho thuê",
+					tenLPhong });
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+
+		if (o.equals(btnTim)) {
+			int ma = Integer.parseInt(txttimmaloai.getText());
+			ArrayList<LoaiPhong> dsLp = lp_Dao.getLoaiPhongTheoMa(ma);
+
+			if (txttimmaloai.getText().trim().equals("")) {
+				tableModel.getDataVector().removeAllElements();
+				docDuLieuLPVaoTable();
+
+			}
+
+			else if (dsLp.size() == 0) {
+				JOptionPane.showMessageDialog(this, "Khong co ma can tim");
+			}
+
+			else {
+				tableModel.getDataVector().removeAllElements();
+				for (LoaiPhong lp : dsLp) {
+					tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
+				}
+			}
+		}
+		if (o.equals(btnTims)) {
+			String ma = txttimphong.getText();
+			ArrayList<Phong> listP = phong_Dao.getListPhongByID(ma);
+
+			if (txttimphong.getText().trim().equals("")) {
+				tableModels.getDataVector().removeAllElements();
+				docDuLieuPhongVaoTable();
+
+			}
+
+			else if (listP == null) {
+				JOptionPane.showMessageDialog(this, "Khong co ma can tim");
+			}
+
+			else {
+				tableModels.getDataVector().removeAllElements();
+				List<LoaiPhong> lp_DAO = lp_Dao.getallLoaiPhong();
+				for (Phong p : listP) {
+
+					int maLPhong = p.getLoaiPhong().getMaLoaiPhong();
+					String tenLPhong = "";
+					for (LoaiPhong i : lp_DAO) {
+						if (i.getMaLoaiPhong() == maLPhong) {
+							tenLPhong = i.getTenLoaiPhong();
+							break;
+						}
+					}
+
+					tableModels.addRow(new Object[] { p.getMaPhong(), p.getViTri(),
+							p.getTinhTrang() == 0 ? "Trống" : p.getTinhTrang() == 1 ? "Đã được đặt" : "Đang cho thuê",
+							tenLPhong });
+				}
+
+			}
+		} else if (o.equals(btnXemTatCa)) {
+			tableModel.getDataVector().removeAllElements();
+			docDuLieuLPVaoTable();
+		}
+
+		else if (o.equals(btnXemTatCas)) {
+			tableModels.getDataVector().removeAllElements();
+			docDuLieuPhongVaoTable();
+		}
+
+		else if (o.equals(btnLamMoi)) {
+			txtMaLoaiPhong.setText("");
+			txtTenLoaiPhong.setText("");
+			txtDonGia.setText("");
+		}
+
+		else if (o.equals(btnLamMois)) {
+			txtMaPhong.setText("");
+			txtvitri.setText("");
+			cbcloaiphong.setSelectedIndex(0);
+			cbctinhtrang.setSelectedIndex(0);
+		}
+
+		else if (o.equals(btnThem)) {
+			int ma = Integer.parseInt(txtMaLoaiPhong.getText());
+			String ten = txtTenLoaiPhong.getText();
+			double donGia = Double.parseDouble(txtDonGia.getText());
+			LoaiPhong lp = new LoaiPhong(ma, ten, donGia);
+
+			try {
+				lp_Dao.insert(lp);
+				tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
+				JOptionPane.showMessageDialog(this, "them thanh cong");
+			} catch (Exception e1) {
+				JOptionPane.showMessageDialog(this, "Trùng");
+			}
+		}
+
+		else if (o.equals(btnThemPhong)) {
+			String ma = txtMaPhong.getText();
+			String viTri = txtvitri.getText();
+			int loaiPhong = cbcloaiphong.getSelectedIndex();
+			int tinhTrang = cbctinhtrang.getSelectedIndex();
+
+			Phong p = new Phong(ma, viTri, tinhTrang, new LoaiPhong(loaiPhong + 1));
+			try {
+				phong_Dao.insert(p);
+				tableModels.getDataVector().removeAllElements();
+				docDuLieuPhongVaoTable();
+				JOptionPane.showMessageDialog(this, "them thanh cong");
+			} catch (Exception e1) {
+				JOptionPane.showMessageDialog(this, "Trùng");
+			}
+
+		}
+
+		else if (o.equals(btnSua)) {
+			int row = table.getSelectedRow();
+			int ma = Integer.parseInt(txtMaLoaiPhong.getText());
+			String ten = txtTenLoaiPhong.getText();
+			double gia = Double.parseDouble(txtDonGia.getText());
+			if (row >= 0) {
+				LoaiPhong lp = new LoaiPhong(ma, ten, gia);
+				System.out.println(lp.toString());
+				if (lp_Dao.update(lp)) {
+					table.setValueAt(txtTenLoaiPhong.getText(), row, 1);
+					;
+					table.setValueAt(txtDonGia.getText(), row, 2);
+					JOptionPane.showMessageDialog(this, "Sua thanh cong");
+				} else {
+					JOptionPane.showMessageDialog(this, "Sua that bai");
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "Chon dong can xoa");
+			}
+		}
+
+		else if (o.equals(btnSuas)) {
+			int row = table1.getSelectedRow();
+
+			String ma = txtMaPhong.getText();
+			String viTri = txtvitri.getText();
+			int loaiPhong = cbcloaiphong.getSelectedIndex();
+			int tinhTrang = cbctinhtrang.getSelectedIndex();
+
+			if (row >= 0) {
+				Phong p = new Phong(ma, viTri, tinhTrang, new LoaiPhong(loaiPhong + 1));
+				if (phong_Dao.update(p)) {
+					table1.setValueAt(txtvitri.getText(), row, 1);
+					table1.setValueAt(cbctinhtrang.getSelectedItem().toString(), row, 2);
+					table1.setValueAt(cbcloaiphong.getSelectedItem().toString(), row, 3);
+
+					JOptionPane.showMessageDialog(this, "Sua thanh cong");
+				} else {
+					JOptionPane.showMessageDialog(this, "Sua that bai");
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "Chon dong can sua");
+			}
+		}
+
+		else if (o.equals(btnXoa)) {
+			int row = table.getSelectedRow();
+			try {
+				if (row == -1) {
+					JOptionPane.showMessageDialog(this, "Chon dong can xoa");
+				} else {
+					LoaiPhong lp = null;
+					lp = getDataInFormLPhong();
+					int ma = lp.getMaLoaiPhong();
+					int count = lp_Dao.getCountPhongByMaLoaiPhong(ma);
+					if (count > 0) {
+						JOptionPane.showMessageDialog(this,
+								"Vẫn còn phòng thuộc loại phòng này. Vui lòng chuyển các phòng thuộc loại phòng '"
+										+ lp.getTenLoaiPhong() + "' sang loại phòng khác trước khi xóa",
+								"Cảnh báo", JOptionPane.YES_NO_OPTION);
+					} else {
+						int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn xoá dòng đã chọn ?", "Cảnh báo",
+								JOptionPane.YES_NO_OPTION);
+						if (ans == JOptionPane.YES_OPTION) {
+							lp_Dao.delete(lp.getMaLoaiPhong());
+							tableModel.removeRow(row);
+							JOptionPane.showMessageDialog(this, "Xóa thành công");
+							cbcloaiphong.removeAllItems();
+							loadDSLPhong();
+						}
+					}
+				}
+			} catch (Exception e3) {
+				JOptionPane.showMessageDialog(this, "Xoa khong thanh cong");
+			}
+
+		}
+
+		else if (o.equals(btnXoas)) {
+			int row = table1.getSelectedRow();
+			try {
+				if (row == -1) {
+					JOptionPane.showMessageDialog(this, "Chon dong can xoa");
+
+				} else {
+					int select = JOptionPane.NO_OPTION;
+					String ma = txtMaPhong.getText();
+					String viTri = txtvitri.getText();
+					int loaiPhong = cbcloaiphong.getSelectedIndex();
+					int tinhTrang = cbctinhtrang.getSelectedIndex();
+
+					Phong phong = new Phong(ma, viTri, tinhTrang, new LoaiPhong(loaiPhong + 1));
+					int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn xoá dòng đã chọn ?", "Cảnh báo",
+							JOptionPane.YES_NO_OPTION);
+					if (ans == JOptionPane.YES_OPTION) {
+						phong_Dao.delete(phong.getMaPhong());
+						tableModels.removeRow(row);
+						JOptionPane.showMessageDialog(this, "Xóa thành công");
+						cbcloaiphong.removeAllItems();
+						loadDSLPhong();
+					}
+				}
+			} catch (Exception e3) {
+				JOptionPane.showMessageDialog(this, "Xoa thanh cong");
+			}
+
+		}
+	}
+
+	public LoaiPhong getDataInFormLPhong() {
+		int maLPhong = Integer.parseInt(txtMaLoaiPhong.getText().trim());
+		String tenLPhong = txtTenLoaiPhong.getText().trim();
+		Double donGia = Double.parseDouble(txtDonGia.getText());
+		LoaiPhong p = new LoaiPhong(maLPhong, tenLPhong, donGia);
+		return p;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+
+		if (o.equals(table)) {
+			int row = table.getSelectedRow();
+			txtMaLoaiPhong.setText(tableModel.getValueAt(row, 0).toString());
+			txtTenLoaiPhong.setText(tableModel.getValueAt(row, 1).toString());
+			txtDonGia.setText(tableModel.getValueAt(row, 2).toString());
+
+		}
+
+		else if (o.equals(table1)) {
+			int row1 = table1.getSelectedRow();
+			txtMaPhong.setText(tableModels.getValueAt(row1, 0).toString());
+			txtvitri.setText(tableModels.getValueAt(row1, 1).toString());
+			cbctinhtrang.setSelectedItem(tableModels.getValueAt(row1, 2).toString());
+			cbcloaiphong.setSelectedItem(tableModels.getValueAt(row1, 3).toString());
+		}
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
