@@ -71,18 +71,18 @@ public class KhachHang_DAO {
 		PreparedStatement statement = null;
 		try {
 			Connection con = ConnectDB.getConnection();
-			String sql = "select * from dbo.KhachHang where TenKH like % ? %";
+			String sql = "select * from dbo.KhachHang where TenKH like ?";
 			statement = con.prepareStatement(sql);
 			statement.setString(1, "%" + name + "%");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				String maKH = rs.getString(1);
-				String tenKH = rs.getString(2);
-				String qt = rs.getString(3);
-				String cccd = rs.getString(4);
-				Date ngayHH = rs.getDate(5);
+//				String maKH = rs.getString(1);
+//				String tenKH = rs.getString(2);
+//				String qt = rs.getString(3);
+//				String cccd = rs.getString(4);
+//				Date ngayHH = rs.getDate(5);
 
-				KhachHang kh = new KhachHang(maKH, tenKH, qt, cccd, ngayHH);
+				KhachHang kh = new KhachHang(rs);
 				dataList.add(kh);
 			}
 		} catch (SQLException e) {
@@ -125,15 +125,23 @@ public class KhachHang_DAO {
 		PreparedStatement statement = null;
 		int n = 0;
 		try {
-			String sql = "insert into dbo.KhachHang (TenKH, QuocTich, CCCD, NgayHetHanCCCD)" + "values (?,?,?,?)";
+			String sql = "insert into dbo.KhachHang (MaKH, TenKH, QuocTich, CCCD, NgayHetHanCCCD)" + "values (?,?,?,?,?)";
 			statement = con.prepareStatement(sql);
-			statement.setString(1, kh.getTenKhachHang());
-			statement.setString(2, kh.getQuocTich());
-			statement.setString(3, kh.getCCCD());
-			statement.setDate(4, kh.getNgayHetHanCCCD());
+			statement.setString(1, kh.getMaKhachHang());
+			statement.setString(2, kh.getTenKhachHang());
+			statement.setString(3, kh.getQuocTich());
+			statement.setString(4, kh.getCCCD());
+			statement.setDate(5, kh.getNgayHetHanCCCD());
 			n = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				statement.close();
+			} catch (SQLException e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
 		}
 		return n > 0;
 	}

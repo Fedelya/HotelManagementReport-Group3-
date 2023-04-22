@@ -119,6 +119,27 @@ public class Phong_DAO {
 //	        return dataList;
 //	    }
 
+	public ArrayList<Phong> getPhongByMaLoaiPhong(int maLoaiPhong) {
+        ArrayList<Phong> dsp = new ArrayList<Phong>();
+        try {
+            ConnectDB.getInstance();
+            Connection conn = ConnectDB.getConnection();
+
+            String sql = "Select * from Phong where MaLoaiPhong = ?";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, maLoaiPhong);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Phong phong = new Phong(rs);
+                dsp.add(phong);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dsp;
+    }
+	
 	public boolean insert(Phong phong) {
 		int n = 0;
 		ConnectDB.getInstance();

@@ -9,9 +9,16 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.Menu;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.security.DomainCombiner;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -42,7 +50,7 @@ import connectDB.ConnectDB;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
 
-public class GUI_QuanLyKhachHang extends JFrame {
+public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, MouseListener, KeyListener {
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu, itemDatPhong, itemQuanLyHoaDon, itemQuanLyPhong, itemQuanLyDichVu,
 			itemQuanLyKhachHang, itemQuanLyNhanVien, itemThongKeDichVu, itemThongKeKhachHang, itemThongKeNhanVien;
@@ -68,7 +76,7 @@ public class GUI_QuanLyKhachHang extends JFrame {
 			new ImageIcon("picture/see_all-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
 
 	private JLabel lblMaKhachHang, lblTenKhachHang, lblCCCD, lblNgayHetHanCCCD, lblQuocTich;
-	private JTextField txtMaKhachHang, txtTenKhachHang, txtCCCD;
+	private JTextField txtMaKhachHang, txtTenKhachHang, txtCCCD, txtTenKhachHangDSKH;
 	private JComboBox<String> cbQuocTich;
 	private DatePicker dpNgayHetHanCCCD;
 
@@ -77,7 +85,9 @@ public class GUI_QuanLyKhachHang extends JFrame {
 
 	private KhachHang_DAO kh_DAO;
 
-	private ArrayList<KhachHang> list;
+	private ArrayList<KhachHang> dsKH;
+	private final int ADD = 1, UPDATE = 2;
+
 	public GUI_QuanLyKhachHang() {
 		// Phần Left
 
@@ -163,7 +173,7 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		kh_DAO = new KhachHang_DAO();
 
 		JPanel pnlFull = new JPanel();
@@ -175,7 +185,7 @@ public class GUI_QuanLyKhachHang extends JFrame {
 //		menuBar.setLayout(new GridLayout(0, 1));
 		menuBar.setLayout(null);
 
-		JLabel lblUser = new JLabel("Tên Admin");
+		JLabel lblUser = new JLabel("admin");
 		lblUser.setBounds(x, 10, w, 70);
 		menuBar.add(lblUser);
 		lblUser.setIcon(iconUser);
@@ -279,8 +289,8 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		lblMaKhachHang.setBounds(10, 20, 100, 30);
 		pnlThongTinKhachHang.add(lblMaKhachHang);
 
-		txtMaKhachHang = new JTextField();
-		txtMaKhachHang.setEditable(false);
+		txtMaKhachHang = new JTextField("KH");
+		txtMaKhachHang.setEditable(true);
 		txtMaKhachHang.setBounds(110, 25, 250, 25);
 		pnlThongTinKhachHang.add(txtMaKhachHang);
 		txtMaKhachHang.setColumns(10);
@@ -301,8 +311,9 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		cbQuocTich = new JComboBox<String>();
 		cbQuocTich.setBounds(110, 95, 160, 25);
 //        cbQuocTich.addItem("");
-        cbQuocTich.addItem("Việt Nam");
-        cbQuocTich.addItem("Nước ngoài");
+		cbQuocTich.addItem("Việt Nam");
+		cbQuocTich.addItem("Nước ngoài");
+		cbQuocTich.setEditable(true);
 		pnlThongTinKhachHang.add(cbQuocTich);
 
 		lblCCCD = new JLabel("CCCD/Hộ chiếu:");
@@ -354,10 +365,10 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		lblTenKhachHang.setBounds(60, 20, 100, 30);
 		pnlDanhSachKhachHang.add(lblTenKhachHang);
 
-		txtTenKhachHang = new JTextField();
-		txtTenKhachHang.setBounds(170, 25, 250, 25);
-		txtTenKhachHang.setColumns(10);
-		pnlDanhSachKhachHang.add(txtTenKhachHang);
+		txtTenKhachHangDSKH = new JTextField();
+		txtTenKhachHangDSKH.setBounds(170, 25, 250, 25);
+		txtTenKhachHangDSKH.setColumns(10);
+		pnlDanhSachKhachHang.add(txtTenKhachHangDSKH);
 
 		btnTim = new JButton("Search");
 		btnTim.setBounds(430, 22, 100, 30);
@@ -391,7 +402,23 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		pnlFull.setBackground(new Color(255, 230, 179));
 
 		// Đọc dữ liệu từ database SQL vào JTable
+		loadListKhachHang();
 		docDuLieuVaoTable();
+
+		// add sự kiện cho button
+		btnThem.addActionListener(this);
+		btnXoa.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnLamMoi.addActionListener(this);
+		btnTim.addActionListener(this);
+		btnXemTatCa.addActionListener(this);
+		btnLogout.addActionListener(this);
+
+		// add sự kiện cho table
+		table.addMouseListener(this);
+		// add sự kiện phím enter
+
+		txtTenKhachHangDSKH.addKeyListener(this);
 	}
 
 	public static void main(String[] args) {
@@ -403,19 +430,24 @@ public class GUI_QuanLyKhachHang extends JFrame {
 		});
 	}
 
+	private void loadListKhachHang() {
+		dsKH = kh_DAO.getalltbKhachHang();
+	}
+
 	public void docDuLieuVaoTable() {
-		List<KhachHang> list = kh_DAO.getalltbKhachHang();
-		for (KhachHang kh : list) {
+		if (dsKH == null || dsKH.size() <= 0)
+			return;
+		for (KhachHang kh : dsKH) {
 			String date = formatDate(kh.getNgayHetHanCCCD());
-			tableModel.addRow(new Object[] { kh.getMaKhachHang(), kh.getTenKhachHang(), kh.getQuocTich(), kh.getCCCD(),
-					date });
+			tableModel.addRow(
+					new Object[] { kh.getMaKhachHang(), kh.getTenKhachHang(), kh.getQuocTich(), kh.getCCCD(), date });
 		}
 	}
-	
+
 	private String formatDate(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
-        return sdf.format(date);
-    }
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
+		return sdf.format(date);
+	}
 //	class Horizontal extends JMenu{
 //		public void HorizontalMenu(String label){
 //			JPopupMenu pm = getPopupMenu();
@@ -434,4 +466,263 @@ public class GUI_QuanLyKhachHang extends JFrame {
 //	public void setPopupMenuVisible(boolean b) {
 //		
 //	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		Object o = e.getSource();
+		Object key = e.getKeyCode();
+		// Bắt sự kiện nhấn phím enter tự nhấn btnLogin
+		if (o.equals(txtTenKhachHangDSKH)) {
+			if (key.equals(KeyEvent.VK_ENTER)) {
+				btnTim.doClick();
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if (o.equals(table)) {
+			int row = table.getSelectedRow();
+			txtMaKhachHang.setText(tableModel.getValueAt(row, 0).toString());
+			txtTenKhachHang.setText(tableModel.getValueAt(row, 1).toString());
+			cbQuocTich.setSelectedItem(tableModel.getValueAt(row, 2).toString());
+			txtCCCD.setText(tableModel.getValueAt(row, 3).toString());
+			try {
+				dpNgayHetHanCCCD.setValue(tableModel.getValueAt(row, 4).toString());
+			} catch (ParseException e2) {
+				e2.printStackTrace();
+			}
+		}
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if (o.equals(btnLamMoi)) {
+			txtMaKhachHang.setText("");
+			txtTenKhachHang.setText("");
+			cbQuocTich.setSelectedIndex(0);
+			txtCCCD.setText("");
+			dpNgayHetHanCCCD.setValueToDay();
+			txtMaKhachHang.requestFocus();
+			txtMaKhachHang.setText("KH");
+		} else if (o.equals(btnThem)) {
+//			if (validData(ADD)) {
+			
+			String maKH = txtMaKhachHang.getText().trim();
+			String tenKH = txtTenKhachHang.getText().trim();
+			String quocTich = cbQuocTich.getSelectedItem().toString();
+			String cccd = txtCCCD.getText().trim();
+			Date now = null;
+			Date ngayHetHan = null;
+			try {
+				now = dpNgayHetHanCCCD.getValueToDay();
+				ngayHetHan = dpNgayHetHanCCCD.getFullDate();
+			} catch (ParseException e3) {
+				e3.printStackTrace();
+			}
+			KhachHang kh = new KhachHang(maKH, tenKH, quocTich, cccd, ngayHetHan);
+
+				try {
+					kh_DAO.insert(kh);
+					String date = formatDate(kh.getNgayHetHanCCCD());
+					tableModel.addRow(new Object[] { kh.getMaKhachHang(), kh.getTenKhachHang(), kh.getQuocTich(),
+							kh.getCCCD(), date });
+					JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công");
+					tableModel.fireTableDataChanged();
+					loadListKhachHang();
+
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(this, "Thêm khách hàng thất bại");
+				}
+//			}
+		} else if (o.equals(btnSua)) {
+//			if (validData(UPDATE)) {
+			String maKH = txtMaKhachHang.getText().trim();
+			String tenKH = txtTenKhachHang.getText().trim();
+			String quocTich = cbQuocTich.getSelectedItem().toString();
+			String cccd = txtCCCD.getText().trim();
+			Date now = null;
+			Date ngayHetHan = null;
+			try {
+				now = dpNgayHetHanCCCD.getValueToDay();
+				ngayHetHan = dpNgayHetHanCCCD.getFullDate();
+			} catch (ParseException e3) {
+				e3.printStackTrace();
+			}
+			KhachHang kh = new KhachHang(maKH, tenKH, quocTich, cccd, ngayHetHan);
+
+				int row = table.getSelectedRow();
+				try {
+					boolean result = kh_DAO.update(kh);
+					if (result == true) {
+						String date = formatDate(kh.getNgayHetHanCCCD());
+						tableModel.setValueAt(kh.getMaKhachHang(), row, 0);
+						tableModel.setValueAt(kh.getTenKhachHang(), row, 1);
+						tableModel.setValueAt(kh.getQuocTich(), row, 2);
+						tableModel.setValueAt(kh.getCCCD(), row, 3);
+						tableModel.setValueAt(date, row, 4);
+						JOptionPane.showMessageDialog(this, "Cập nhật thành công");
+						tableModel.fireTableDataChanged();
+						loadListKhachHang();
+					} else {
+						JOptionPane.showMessageDialog(this, "Lỗi: Cập nhật thất bại");
+					}
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+//			}
+		} else if (o.equals(btnXoa)) {
+			int row = table.getSelectedRow();
+			try {
+				if (row == -1) {
+					JOptionPane.showMessageDialog(this, "Lỗi: Cần chọn dòng muốn xóa");
+				} else {
+					int select = JOptionPane.NO_OPTION;
+					KhachHang kh = getDataInForm();
+					String tenKH = kh.getTenKhachHang();
+					select = JOptionPane.showConfirmDialog(this, "<html>"
+							+ "<p style='text-align: center; font-size: 18px; color:red'>Cảnh báo</p>"
+							+ "<p style='text-align: center;'>Xóa khách hành " + "<span style='color: blue'> " + tenKH
+							+ "</span>" + " sẽ dẫn đến xóa toàn bộ hóa đơn phòng, hóa đơn dịch vụ có liên quan.</p>"
+							+ "<p style='text-align: left;'>Hãy suy nghĩ thật kỹ trước khi quyết định.</p>" + "</html>",
+							"Cảnh báo", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+					if (select == JOptionPane.YES_OPTION) {
+						kh_DAO.delete(kh);
+						tableModel.removeRow(row);
+						loadListKhachHang();
+						JOptionPane.showMessageDialog(this, "Xóa thành công");
+					}
+				}
+			} catch (Exception e2) {
+				JOptionPane.showMessageDialog(this, "Xóa thất bại");
+			}
+		} else if (o.equals(btnTim)) {
+			if (validDataTim()) {
+				String tenkh = txtTenKhachHangDSKH.getText().trim();
+				tableModel.getDataVector().removeAllElements();
+				tableModel.fireTableDataChanged();
+				dsKH = kh_DAO.getListKhachHangByName(tenkh);
+				if (dsKH == null || dsKH.size() <= 0) {
+					JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng");
+				} else
+					docDuLieuVaoTable();
+			}
+		} else if (o.equals(btnXemTatCa)) {
+			tableModel.getDataVector().removeAllElements();
+			tableModel.fireTableDataChanged();
+			dsKH = kh_DAO.getalltbKhachHang();
+			if (dsKH == null || dsKH.size() <= 0)
+				JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng");
+			else
+				docDuLieuVaoTable();
+		} else if (o.equals(btnLogout)) {
+			int response = JOptionPane.showConfirmDialog(null, "Bạn muốn đăng xuất", "Đăng xuất",
+					JOptionPane.YES_NO_OPTION);
+			if (response == JOptionPane.NO_OPTION) {
+
+			} else if (response == JOptionPane.YES_OPTION) {
+				this.dispose();
+				new GUI_DangNhap().setVisible(true);
+			}
+		}
+	}
+
+	public boolean validData(int type) {
+		String maKH = txtMaKhachHang.getText().trim();
+		String tenKH = txtTenKhachHang.getText().trim();
+		String cmnd = txtCCCD.getText().trim();
+		if (!(maKH.length() > 0 && maKH.matches("(KH)\\d{1,4}"))) {
+			JOptionPane.showMessageDialog(this, "Lỗi: Mã khách hàng phải là KH1, KH2, KH3...");
+			return false;
+		}
+		if (!(tenKH.length() > 0 && tenKH.matches("^[^0-9]+$"))) {
+			JOptionPane.showMessageDialog(this, "Lỗi: Tên không được để trống");
+			return false;
+		}
+		if (!(cmnd.length() > 0 && cmnd.matches("^(\\d{9}$"))) {
+			JOptionPane.showMessageDialog(this, "Lỗi: CMND phải có 9 số");
+			return false;
+		} else {
+			if (type == ADD)
+				for (KhachHang item : dsKH) {
+					if (item.getCCCD().equalsIgnoreCase(cmnd)) {
+						JOptionPane.showMessageDialog(this, "Lỗi: CMND hoặc CCCD đã tồn tại");
+						return false;
+					}
+				}
+		}
+		Date now = null;
+		Date ngayHetHan = null;
+		try {
+			now = dpNgayHetHanCCCD.getValueToDay();
+			ngayHetHan = dpNgayHetHanCCCD.getFullDate();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		if (!ngayHetHan.toString().equals(now.toString()) && ngayHetHan.before(now)) {
+			JOptionPane.showMessageDialog(this, "Lỗi: Giấy tờ đã hết hạn");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean validDataTim() {
+		String TenKH = txtTenKhachHangDSKH.getText().trim();
+		if (!(TenKH.length() > 0)) {
+			JOptionPane.showMessageDialog(this, "Lỗi: Tên không được để trống");
+			return false;
+		}
+		return true;
+	}
+
+	private KhachHang getDataInForm() throws ParseException {
+		String maKH = txtMaKhachHang.getText().trim();
+		String tenKH = txtTenKhachHang.getText().trim();
+		String quocTich = cbQuocTich.getSelectedItem().toString();
+		String cccd = txtCCCD.getText().trim();
+		Date ngayHetHan = dpNgayHetHanCCCD.getFullDate();
+		KhachHang kh = new KhachHang(maKH, tenKH, quocTich, cccd, ngayHetHan);
+		return kh;
+	}
+
 }
