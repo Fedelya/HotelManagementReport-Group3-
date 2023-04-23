@@ -254,6 +254,7 @@ public class GUI_TrangChu extends JFrame implements ActionListener {
 		pnlTrangChu.revalidate();
 		pnlTrangChu.repaint();
 
+		
 		btnPhong = new JButton[dsPhong.size()];
 		for (int i = 0; i < dsPhong.size(); i++) {
 			Phong phong = dsPhong.get(i);
@@ -266,8 +267,8 @@ public class GUI_TrangChu extends JFrame implements ActionListener {
 
 			lblMaPhong = new JLabel(String.valueOf(phong.getMaPhong()));
 			lblMaPhong.setAlignmentX(Component.CENTER_ALIGNMENT);
-			lblMaPhong.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
-			lblMaPhong.setForeground(Color.WHITE);
+			lblMaPhong.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
+			lblMaPhong.setForeground(Color.black);
 
 			int maLP = phong.getLoaiPhong().getMaLoaiPhong();
 			String tenLP = "";
@@ -277,32 +278,43 @@ public class GUI_TrangChu extends JFrame implements ActionListener {
 					break;
 				}
 			}
-			lblLoai = new JLabel(tenLP);
-//			System.out.println(tenLP);
-			lblLoai.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
-			lblLoai.setAlignmentX(Component.CENTER_ALIGNMENT);
-			lblLoai.setForeground(Color.WHITE);
+			
 
 			JLabel lblIcon;
 			if (phong.getTinhTrang() == 2) {
-				btnPhong[i].setBackground(Color.red);
+//				btnPhong[i].setBackground(Color.red);
 				lblIcon = new JLabel(iconRedClose);
 			} else if (phong.getTinhTrang() == 1) {
-				btnPhong[i].setBackground(Color.orange);
+//				btnPhong[i].setBackground(Color.orange);
 				lblIcon = new JLabel(iconQuestion);
 			} else {
-				btnPhong[i].setBackground(Color.green);
+//				btnPhong[i].setBackground(Color.green);
 				lblIcon = new JLabel(iconGreenCheck);
 			}
 			lblIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
 			lblIcon.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
 			lblIcon.setForeground(Color.WHITE);
 
+			lblLoai = new JLabel(tenLP);
+//			System.out.println(tenLP);
+			lblLoai.setFont(new Font(Font.DIALOG, Font.BOLD, 25));
+			lblLoai.setAlignmentX(Component.CENTER_ALIGNMENT);
+			lblLoai.setForeground(new Color(255, 3, 238));
 			btnPhong[i].add(lblMaPhong);
-			btnPhong[i].add(lblLoai);
 			btnPhong[i].add(space(0, 5));
 			btnPhong[i].add(lblIcon);
+			btnPhong[i].add(lblLoai);
 
+			Image imgBlueHouse = new ImageIcon("picture/blue-house.png").getImage().getScaledInstance(160, 180, Image.SCALE_SMOOTH);
+			Image imgYellowHouse = new ImageIcon("picture/house-yellow.png").getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH);
+			Image imgRedHouse = new ImageIcon("picture/red-house.png").getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH);
+			if(dsPhong.get(i).getTinhTrang() == 0) {
+				btnPhong[i].setIcon(new ImageIcon(imgBlueHouse));
+			}else if(dsPhong.get(i).getTinhTrang() == 1) {
+				btnPhong[i].setIcon(new ImageIcon(imgYellowHouse));
+			}else {
+				btnPhong[i].setIcon(new ImageIcon(imgRedHouse));
+			}
 //			btnPhong[i].addActionListener(new ActionListener() {
 //				
 //				@Override
@@ -400,9 +412,17 @@ public class GUI_TrangChu extends JFrame implements ActionListener {
 				dsPhong = phong_DAO.getPhongByMaLoaiPhong(dsLP.get(choose).getMaLoaiPhong());
 
 			}
+		} else if (true) {
+			for (int i = 0; i < dsPhong.size(); i++) {
+				if (o.equals(btnPhong[i])) {
+					this.dispose();
+					new GUI_DatPhong().setVisible(true);
+				}
+			}
+			// Menu
 		}
-		// Menu
-		else if (o.equals(itemDatPhong)) {
+
+		if (o.equals(itemDatPhong)) {
 			this.dispose();
 			new GUI_DatPhong().setVisible(true);
 		} else if (o.equals(itemQuanLyDichVu)) {
