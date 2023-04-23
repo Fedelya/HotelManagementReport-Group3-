@@ -342,8 +342,8 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 
 		pnldanhsachphong.setLayout(null);
 
-		lbltimmaphong = new JLabel("Mã Phòng:");
-		lbltimmaphong.setBounds(5, 22, 100, 30);
+		lbltimmaphong = new JLabel("Vị trí phòng:");
+		lbltimmaphong.setBounds(7, 22, 100, 30);
 		pnldanhsachphong.add(lbltimmaphong);
 
 		txttimphong = new JTextField();
@@ -417,6 +417,15 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 		btnSuas.addActionListener(this);
 		btnXoa.addActionListener(this);
 		btnXoas.addActionListener(this);
+		itemDatPhong.addActionListener(this);
+		itemQuanLyDichVu.addActionListener(this);
+		itemQuanLyHoaDon.addActionListener(this);
+		itemQuanLyKhachHang.addActionListener(this);
+		itemQuanLyPhong.addActionListener(this);
+		itemThongKeDichVu.addActionListener(this);
+		itemThongKeKhachHang.addActionListener(this);
+		itemTrangChu.addActionListener(this);
+
 	}
 
 	public static void main(String[] args) {
@@ -435,13 +444,6 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 		for (LoaiPhong lp : dsLoaiPhong) {
 			tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
 		}
-	}
-
-	private LoaiPhong revertLP() {
-		int ma = Integer.parseInt(txtMaLoaiPhong.getText());
-		String ten = txtTenLoaiPhong.getText();
-		double gia = Double.parseDouble(txtDonGia.getText());
-		return new LoaiPhong(ma, ten, gia);
 	}
 
 	public void docDuLieuPhongVaoTable() {
@@ -490,8 +492,8 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 			}
 		}
 		if (o.equals(btnTims)) {
-			String ma = txttimphong.getText();
-			ArrayList<Phong> listP = phong_Dao.getListPhongByID(ma);
+			String viTri = txttimphong.getText();
+			ArrayList<Phong> listP = phong_Dao.getListPhongByViTri(viTri);
 
 			if (txttimphong.getText().trim().equals("")) {
 				tableModels.getDataVector().removeAllElements();
@@ -500,7 +502,7 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 			}
 
 			else if (listP == null) {
-				JOptionPane.showMessageDialog(this, "Khong co ma can tim");
+				JOptionPane.showMessageDialog(this, "Thong tin khong hop le");
 			}
 
 			else {
@@ -537,6 +539,7 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 			txtMaLoaiPhong.setText("");
 			txtTenLoaiPhong.setText("");
 			txtDonGia.setText("");
+			txtMaLoaiPhong.setEditable(true);
 		}
 
 		else if (o.equals(btnLamMois)) {
@@ -544,37 +547,46 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 			txtvitri.setText("");
 			cbcloaiphong.setSelectedIndex(0);
 			cbctinhtrang.setSelectedIndex(0);
+			txtMaPhong.setEditable(true);
 		}
 
 		else if (o.equals(btnThem)) {
-			int ma = Integer.parseInt(txtMaLoaiPhong.getText());
-			String ten = txtTenLoaiPhong.getText();
-			double donGia = Double.parseDouble(txtDonGia.getText());
-			LoaiPhong lp = new LoaiPhong(ma, ten, donGia);
 
-			try {
-				lp_Dao.insert(lp);
-				tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
-				JOptionPane.showMessageDialog(this, "them thanh cong");
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(this, "Trùng");
+			if (validLoaiPhong()) {
+				LoaiPhong lp = revertLoaiPhong();
+
+				try {
+					lp_Dao.insert(lp);
+					tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
+					JOptionPane.showMessageDialog(this, "them thanh cong");
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(this, "Trùng");
+				}
 			}
 		}
 
 		else if (o.equals(btnThemPhong)) {
 			String ma = txtMaPhong.getText();
-			String viTri = txtvitri.getText();
-			int loaiPhong = cbcloaiphong.getSelectedIndex();
-			int tinhTrang = cbctinhtrang.getSelectedIndex();
+			if (ma.matches("P\\d{3}") && ma.length() > 0) {
+				String viTri = txtvitri.getText();
+				int loaiPhong = cbcloaiphong.getSelectedIndex();
+				int tinhTrang = cbctinhtrang.getSelectedIndex();
 
-			Phong p = new Phong(ma, viTri, tinhTrang, new LoaiPhong(loaiPhong + 1));
-			try {
-				phong_Dao.insert(p);
-				tableModels.getDataVector().removeAllElements();
-				docDuLieuPhongVaoTable();
-				JOptionPane.showMessageDialog(this, "them thanh cong");
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(this, "Trùng");
+				Phong p = new Phong(ma, viTri, tinhTrang, new LoaiPhong(loaiPhong + 1));
+				try {
+					if (phong_Dao.insert(p)) {
+
+						tableModels.getDataVector().removeAllElements();
+						docDuLieuPhongVaoTable();
+						JOptionPane.showMessageDialog(this, "them thanh cong");
+					} else {
+						JOptionPane.showMessageDialog(this, "Trung");
+					}
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(this, "Trùng");
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "ma phai nhap theo kieu vd P001 va khong duoc de rong");
 			}
 
 		}
@@ -631,7 +643,7 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 					JOptionPane.showMessageDialog(this, "Chon dong can xoa");
 				} else {
 					LoaiPhong lp = null;
-					lp = getDataInFormLPhong();
+					lp = revertLoaiPhong();
 					int ma = lp.getMaLoaiPhong();
 					int count = lp_Dao.getCountPhongByMaLoaiPhong(ma);
 					if (count > 0) {
@@ -664,7 +676,6 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 					JOptionPane.showMessageDialog(this, "Chon dong can xoa");
 
 				} else {
-					int select = JOptionPane.NO_OPTION;
 					String ma = txtMaPhong.getText();
 					String viTri = txtvitri.getText();
 					int loaiPhong = cbcloaiphong.getSelectedIndex();
@@ -686,14 +697,97 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 			}
 
 		}
+
+		// Menu
+		else if (o.equals(itemDatPhong)) {
+			this.dispose();
+			new GUI_DatPhong().setVisible(true);
+		} else if (o.equals(itemQuanLyDichVu)) {
+			this.dispose();
+			new GUI_QuanLyDichVu().setVisible(true);
+		} else if (o.equals(itemQuanLyHoaDon)) {
+			this.dispose();
+			new GUI_QuanLyHoaDonDichVu().setVisible(true);
+		} else if (o.equals(itemQuanLyKhachHang)) {
+			this.dispose();
+			new GUI_QuanLyKhachHang().setVisible(true);
+		} else if (o.equals(itemThongKeDichVu)) {
+			this.dispose();
+			new GUI_ThongKeDichVu().setVisible(true);
+		} else if (o.equals(itemThongKeKhachHang)) {
+			this.dispose();
+			new GUI_ThongKeKhachHang().setVisible(true);
+		} else if (o.equals(itemTrangChu)) {
+			this.dispose();
+			new GUI_TrangChu().setVisible(true);
+		}
+
+		else if (o.equals(btnLogout)) {
+			int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn đăng xuất ?", "Cảnh báo",
+					JOptionPane.YES_NO_OPTION);
+			if (ans == JOptionPane.YES_OPTION) {
+				this.dispose();
+				new GUI_DangNhap().setVisible(true);
+			}
+
+		}
 	}
 
-	public LoaiPhong getDataInFormLPhong() {
+	public LoaiPhong revertLoaiPhong() {
 		int maLPhong = Integer.parseInt(txtMaLoaiPhong.getText().trim());
 		String tenLPhong = txtTenLoaiPhong.getText().trim();
 		Double donGia = Double.parseDouble(txtDonGia.getText());
 		LoaiPhong p = new LoaiPhong(maLPhong, tenLPhong, donGia);
 		return p;
+	}
+
+	private boolean validLoaiPhong() {
+		String ma = txtMaLoaiPhong.getText().trim();
+		String ten = txtTenLoaiPhong.getText().trim();
+		String donGia = txtDonGia.getText().trim();
+
+		// Co ki tu dau la cua tua sach theo sau la 3 ki so
+		if (ma.length() > 0) {
+			try {
+				double y = Double.parseDouble(ma);
+				if (y < 0) {
+					JOptionPane.showMessageDialog(this, "Ma phai la so tu nhien > 0 va khong duoc de trong");
+					txtMaLoaiPhong.selectAll();
+					txtMaLoaiPhong.requestFocus();
+					return false;
+				}
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Ma phai la so tu nhien > 0");
+				txtMaLoaiPhong.selectAll();
+				txtMaLoaiPhong.requestFocus();
+				return false;
+			}
+		}
+
+		if (ten.length() < 0) {
+			JOptionPane.showMessageDialog(this, "Ten loai phong khong duoc de trong");
+			txtTenLoaiPhong.selectAll();
+			txtTenLoaiPhong.requestFocus();
+			return false;
+		}
+
+		if (donGia.length() > 0) {
+			try {
+				double y = Double.parseDouble(donGia);
+				if (y < 0) {
+					JOptionPane.showMessageDialog(this, "Don gia phai > 0 va khong duoc de trong");
+					txtDonGia.selectAll();
+					txtDonGia.requestFocus();
+					return false;
+				}
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Error: Don gia phai nhap so.");
+				txtDonGia.selectAll();
+				txtDonGia.requestFocus();
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -705,7 +799,7 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 			txtMaLoaiPhong.setText(tableModel.getValueAt(row, 0).toString());
 			txtTenLoaiPhong.setText(tableModel.getValueAt(row, 1).toString());
 			txtDonGia.setText(tableModel.getValueAt(row, 2).toString());
-
+			txtMaLoaiPhong.setEditable(false);
 		}
 
 		else if (o.equals(table1)) {
@@ -714,6 +808,7 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 			txtvitri.setText(tableModels.getValueAt(row1, 1).toString());
 			cbctinhtrang.setSelectedItem(tableModels.getValueAt(row1, 2).toString());
 			cbcloaiphong.setSelectedItem(tableModels.getValueAt(row1, 3).toString());
+			txtMaPhong.setEditable(false);
 		}
 
 	}

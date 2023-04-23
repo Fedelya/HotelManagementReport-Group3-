@@ -76,7 +76,7 @@ public class LoaiPhong_DAO {
 
 	}
 
-	public boolean insert(LoaiPhong lp) {
+	public boolean insert(LoaiPhong lp) throws ClassNotFoundException, SQLException {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement statement = null;
@@ -90,12 +90,6 @@ public class LoaiPhong_DAO {
 			n = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				statement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		return n > 0;
 	}

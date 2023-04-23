@@ -120,26 +120,58 @@ public class Phong_DAO {
 //	    }
 
 	public ArrayList<Phong> getPhongByMaLoaiPhong(int maLoaiPhong) {
-        ArrayList<Phong> dsp = new ArrayList<Phong>();
-        try {
-            ConnectDB.getInstance();
-            Connection conn = ConnectDB.getConnection();
+		ArrayList<Phong> dsp = new ArrayList<Phong>();
+		try {
+			ConnectDB.getInstance();
+			Connection conn = ConnectDB.getConnection();
 
-            String sql = "Select * from Phong where MaLoaiPhong = ?";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, maLoaiPhong);
-            ResultSet rs = statement.executeQuery();
+			String sql = "Select * from Phong where MaLoaiPhong = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1, maLoaiPhong);
+			ResultSet rs = statement.executeQuery();
 
-            while (rs.next()) {
-                Phong phong = new Phong(rs);
-                dsp.add(phong);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return dsp;
-    }
-	
+			while (rs.next()) {
+				Phong phong = new Phong(rs);
+				dsp.add(phong);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dsp;
+	}
+
+	public ArrayList<Phong> getListPhongByViTri(String viTri) {
+		ArrayList<Phong> listP = new ArrayList<Phong>();
+		PreparedStatement stmt = null;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		String query = "Select * from dbo.Phong where ViTri like ?";
+		ResultSet rs = null;
+		try {
+			stmt = con.prepareStatement(query);
+			stmt.setString(1, viTri);
+
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String maPhong = rs.getString("MaPhong");
+				String pos = rs.getString("ViTri");
+				int tinhTrang = rs.getInt("TinhTrang");
+				LoaiPhong loaiPhong = new LoaiPhong(rs.getInt("MaLoaiPhong"));
+				Phong p = new Phong(maPhong, pos, tinhTrang, loaiPhong);
+				listP.add(p);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return listP;
+	}
+
 	public boolean insert(Phong phong) {
 		int n = 0;
 		ConnectDB.getInstance();

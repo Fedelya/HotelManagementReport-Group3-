@@ -3,17 +3,20 @@ package GUI;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-public class GUI_DangNhap extends JFrame {
+public class GUI_DangNhap extends JFrame implements ActionListener {
 
 	private JTextField txtUsername;
 	private JPasswordField txtPassword;
@@ -78,9 +81,41 @@ public class GUI_DangNhap extends JFrame {
 
 		this.setBackground(new Color(255, 230, 179));
 
+		btnLogin.addActionListener(this);
+		btnCancel.addActionListener(this);
+
 	}
 
 	public static void main(String[] args) {
 		new GUI_DangNhap().setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		if (o.equals(btnLogin)) {
+			String tenTK = txtUsername.getText();
+			String maTK = txtPassword.getText();
+			if (tenTK.equals("admin") && maTK.equals("admin")) {
+				JOptionPane.showMessageDialog(this, "Dang nhap thanh cong");
+				new GUI_TrangChu().setVisible(true);
+			} else {
+				JOptionPane.showMessageDialog(this, "Sai mk hoac tai khoan");
+				txtPassword.requestFocus();
+				txtUsername.requestFocus();
+				txtPassword.selectAll();
+				txtUsername.selectAll();
+			}
+		}
+
+		else if (o.equals(btnCancel)) {
+			int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn thoat?", "Cảnh báo", JOptionPane.YES_NO_OPTION);
+			if (ans == JOptionPane.YES_OPTION) {
+				System.exit(0);
+				;
+			}
+
+		}
+
 	}
 }
