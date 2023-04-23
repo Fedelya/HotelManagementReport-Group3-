@@ -11,6 +11,8 @@ import java.awt.LayoutManager;
 import java.awt.Menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -18,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -45,13 +46,13 @@ import connectDB.ConnectDB;
 import dao.ChiTietDichVu_DAO;
 import dao.DichVu_DAO;
 import dao.HoaDonDichVu_DAO;
+import dao.KhachHang_DAO;
 import entity.ChiTietDichVu;
 import entity.DichVu;
 import entity.HoaDonDichVu;
 import entity.KhachHang;
-import entity.LoaiPhong;
 
-public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
+public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, MouseListener {
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
@@ -77,7 +78,6 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 
 	private JLabel lblMaKhachHang, lblTenKhachHang, lblCCCD, lblNgayHetHanCCCD, lblQuocTich;
 	private JTextField txtTenKhachHang, txtCCCD;
-	private JComboBox<String> cbQuocTich;
 	private DatePicker dpNgayHetHanCCCD;
 
 	private DefaultTableModel tableModel;
@@ -104,24 +104,33 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 	private JMenuItem itemQuanLyPhong;
 	private JMenuItem itemQuanLyDichVu;
 	private JMenuItem itemQuanLyKhachHang;
-	ArrayList<DichVu> dsdv ;
+
+	private ArrayList<ChiTietDichVu> dsCTDV;
+	private ArrayList<KhachHang> dsKH;
+	private ArrayList<DichVu> dsDV;
 	private HoaDonDichVu_DAO HDDV_dao;
-	private ChiTietDichVu_DAO CTDV_dao;
-	private DichVu_DAO DV_dao;
-	private int maDichVu;
+	private ChiTietDichVu_DAO ctDV_dao;
+	private KhachHang_DAO kh_dao;
+	private DichVu_DAO dv_dao;
+	private JTextField txtMaHDDV;
 
 	public GUI_QuanLyHoaDonDichVu() {
 		// Phần Left
+		dsKH = new ArrayList<KhachHang>();
+		dsCTDV = new ArrayList<ChiTietDichVu>();
+		dsDV = new ArrayList<DichVu>();
+		ctDV_dao = new ChiTietDichVu_DAO();
+		kh_dao = new KhachHang_DAO();
+		dv_dao = new DichVu_DAO();
 
 		try {
 			ConnectDB.getInstance().connect();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		HDDV_dao = new HoaDonDichVu_DAO();
-		DV_dao =new DichVu_DAO();
-		CTDV_dao =new ChiTietDichVu_DAO();
 		
+		HDDV_dao = new HoaDonDichVu_DAO();
+
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
 		pnlFull.setBounds(0, 0, 1000, 650);
@@ -239,6 +248,7 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 		cboMaKhachHang = new JComboBox<String>();
 		cboMaKhachHang.setEditable(false);
 		cboMaKhachHang.setBounds(145, 25, 195, 25);
+		cboMaKhachHang.addItem("");
 		pnlThongTin.add(cboMaKhachHang);
 
 		lblTenKhachHang = new JLabel("Tên khách hàng:");
@@ -246,9 +256,10 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 		pnlThongTin.add(lblTenKhachHang);
 
 		txtTenKhachHang = new JTextField();
+		txtTenKhachHang.setEditable(false);
+		txtTenKhachHang.setColumns(10);
 		txtTenKhachHang.setBounds(500, 25, 195, 25);
 		pnlThongTin.add(txtTenKhachHang);
-		txtTenKhachHang.setColumns(10);
 
 		lblTenKhachHang = new JLabel("Dịch vụ:");
 		lblTenKhachHang.setBounds(7, 70, 100, 20);
@@ -256,6 +267,7 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 
 		jcbDichVu = new JComboBox<String>();
 		jcbDichVu.setBounds(75, 70, 140, 25);
+		jcbDichVu.addItem("");
 		pnlThongTin.add(jcbDichVu);
 
 		lblTenKhachHang = new JLabel("Số lượng:");
@@ -333,10 +345,10 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 		lblTenKhachHang.setBounds(10, 20, 130, 30);
 		pnlDanhSachHoaDon.add(lblTenKhachHang);
 
-		txtTenKhachHang = new JTextField();
-		txtTenKhachHang.setBounds(150, 25, 200, 25);
-		txtTenKhachHang.setColumns(10);
-		pnlDanhSachHoaDon.add(txtTenKhachHang);
+		txtMaHDDV = new JTextField();
+		txtMaHDDV.setBounds(150, 25, 200, 25);
+		txtMaHDDV.setColumns(10);
+		pnlDanhSachHoaDon.add(txtMaHDDV);
 
 		btnTim = new JButton("Search");
 		btnTim.setBounds(350, 22, 110, 30);
@@ -363,96 +375,121 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener{
 //		setResizable(false);
 		add(pnlFull);
 		pnlFull.setBackground(new Color(255, 230, 179));
-		
-		docDuLieuVaoTable();
-		DocDuLieuVaoTableChiTietDichVu();
+
+		docDuLieuVaoTableHDDV();
+		docDuLieuVaoDV();
+		loadCboMaKH();
+		loadCboTenDV();
+
+		table.addMouseListener(this);
+		tableHD.addMouseListener(this);
+		cboMaKhachHang.addActionListener(this);
+//		pnlThongTin.addMouseListener(this);
 	}
 
 	public static void main(String[] args) {
 		new GUI_QuanLyHoaDonDichVu().setVisible(true);
 
 	}
-	public void docDuLieuVaoTable() {
+
+	public void docDuLieuVaoDV() {
+		tableModel.setRowCount(0);
+		for (ChiTietDichVu i : dsCTDV) {
+			String date = formatDate(i.getNgayGioDat());
+			tableModel.addRow(new Object[] { i.getDichVu().getMaDichVu(), i.getDichVu().getTenDichVu(), i.getSoLuong(),
+					i.getDichVu().getDonGia(), date, i.getHoaDonDichVu().getMaHoaDonDichVu() });
+			break;
+		}
+	}
+
+	public void docDuLieuVaoTableHDDV() {
 		List<HoaDonDichVu> list = HDDV_dao.getalltbHoaDonDichVu();
 		for (HoaDonDichVu hddv : list) {
 			String date = formatDate(hddv.getNgayGioDat());
-			tableModelHD.addRow(new Object[] { hddv.getMaHoaDonDichVu(), hddv.getKhachHang().getMaKhachHang(),date, hddv.getTinhTrang()});
+			tableModelHD.addRow(new Object[] { hddv.getMaHoaDonDichVu(), hddv.getKhachHang().getMaKhachHang(), date,
+					hddv.getMaHoaDonDichVu(), hddv.getTinhTrang() });
 		}
 	}
+
 	private String formatDate(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
-        return sdf.format(date);
-    }
-	public void DocDuLieuVaoTableChiTietDichVu() {
-		
-		List<HoaDonDichVu> list = HDDV_dao.getalltbHoaDonDichVu();
-		List<ChiTietDichVu> listctdv = CTDV_dao.getallChiTietDichVu();
-		List<DichVu> listdv =DV_dao.getalltbDichVu();
-		for (ChiTietDichVu ctdv : listctdv) {
-			int maDichVu = ctdv.getDichVu().getMaDichVu();
-			String tenDichVu = "";
-			double dongia=ctdv.getDichVu().getDonGia();
-			
-			
-			for (DichVu dv : listdv) {
-				if (dv.getMaDichVu() == maDichVu) {
-					tenDichVu = dv.getTenDichVu();
-					dongia =dv.getDonGia();
-					break;
-				}
-			}
-			
-			
-			String dates = formatDate(ctdv.getNgayGioDat());
-				
-			
-			int maHoaDon = ctdv.getHoaDonDichVu().getMaHoaDonDichVu();
-			
-			
-			tableModel.addRow(new Object[] { maDichVu,tenDichVu ,ctdv.getSoLuong(),dongia,dates, maHoaDon});
-			//updateComboboxData();
-		}
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
+		return sdf.format(date);
 	}
-// private void updateComboboxData() {
-//		
-//		int n = dsdv.size();
-//		String[] items = new String[n];
-//		int i = 0;
-//		for ( DichVu  dv: DV_dao.getalltbDichVu()) {
-//			items[i] = dv.getTenDichVu();
-//			i++;
-//		}
-//		jcbDichVu.setModel(new DefaultComboBoxModel<String>(items));
-//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		
-//		if(o.equals(btnThem)) {
-//			int ma = jcbDichVu.getSelectedIndex();
-//			int soluong =Integer.parseInt(txtSoLuong.getText());
-//			
-//			double dongia = Double.parseDouble(txtGia.getText());
-//			long millis = System.currentTimeMillis();
-//			Date date = new Date(millis);
-//			
-//			ChiTietDichVu ctdv = new ChiTietDichVu(new DichVu(ma),(new HoaDonDichVu(ma),soluong,date);
-//			
-//			
-//			
-//		}else if (o.equals(btnLamMoi)) {			
-//			txtSoLuong.setText("");
-//			txtGia.setText("");
+//		if (o.equals(btnThem)) {
 //			
 //		}
-        
-//		
-		
-		
-		
-		
+		if (o.equals(cboMaKhachHang)) {
+			int indx = cboMaKhachHang.getSelectedIndex();
+			if (indx == -1) {
+				txtTenKhachHang.setText("");
+			} else {
+				String ten = String.valueOf(dsKH.get(indx).getTenKhachHang());
+				txtTenKhachHang.setText(ten);
+			}
+		}
 	}
-	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if (o.equals(table)) {
+			int row1 = table.getSelectedRow();
+			int row2 = tableHD.getSelectedRow();
+			cboMaKhachHang.setSelectedItem(tableModelHD.getValueAt(row2, 1).toString());
+			jcbDichVu.setSelectedItem(tableModel.getValueAt(row1, 1).toString());
+			txtSoLuong.setText(tableModel.getValueAt(row1, 2).toString());
+			txtGia.setText(tableModel.getValueAt(row1, 3).toString());
+		} else if (o.equals(tableHD)) {
+			int row = tableHD.getSelectedRow();
+			int maHD = Integer.parseInt(tableModelHD.getValueAt(row, 0).toString());
+			dsCTDV = ctDV_dao.getChiTietDVByMaHDDV(maHD);
+			cboMaKhachHang.setSelectedItem(tableModelHD.getValueAt(row, 1).toString());
+			cboMaKhachHang.setEditable(false);
+			docDuLieuVaoDV();
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void loadCboMaKH() {
+		dsKH = kh_dao.getalltbKhachHang();
+		for (KhachHang kh : dsKH) {
+			String ma = kh.getMaKhachHang();
+//			txtTenKhachHang.setText(kh.getTenKhachHang());
+			cboMaKhachHang.addItem(String.valueOf(ma));
+		}
+	}
+
+	private void loadCboTenDV() {
+		dsDV = dv_dao.getalltbDichVu();
+		for (DichVu dv : dsDV)
+			jcbDichVu.addItem(dv.getTenDichVu());
+	}
+
 }

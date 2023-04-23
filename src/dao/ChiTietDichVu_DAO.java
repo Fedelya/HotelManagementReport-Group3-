@@ -10,7 +10,9 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entity.ChiTietDichVu;
+import entity.ChiTietDichVu;
 import entity.DichVu;
+import entity.HoaDonDichVu;
 import entity.HoaDonDichVu;
 import entity.KhachHang;
 import entity.LoaiPhong;
@@ -100,6 +102,34 @@ public class ChiTietDichVu_DAO {
 //	}
 //}
 	
-	
+	public ArrayList<ChiTietDichVu> getChiTietDVByMaHDDV(int maHDDV) {
+		ArrayList<ChiTietDichVu> dataList = new ArrayList<ChiTietDichVu>();
+		ConnectDB.getInstance();
+		PreparedStatement stmt = null;
+		try {
+			Connection con = ConnectDB.getConnection();
+			String sql ="select * from ChiTietDichVu join DichVu on chiTietDichVu.MaDV = DichVu.MaDV where MaHDDV = ?";
+					//"select * from ChiTietDV join DichVu on chiTietDV.maDV = DichVu.maDV where maHDDV = ?";
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, maHDDV);
+
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				int soLuong = rs.getInt("SoLuong");
+				int maDV = rs.getInt("MaDV");
+				String tenDV = rs.getString("TenDV");
+				double donGia = rs.getDouble("DonGia");
+				DichVu dv = new DichVu(maDV, tenDV, donGia);
+				Date date = rs.getDate("NgayGioDat");
+				int maHD = rs.getInt("MaHDDV");
+				HoaDonDichVu hddv = new HoaDonDichVu(maHD);
+				ChiTietDichVu ctdv = new ChiTietDichVu(dv,hddv,soLuong, date);
+				dataList.add(ctdv);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dataList;
+	}
 
 }

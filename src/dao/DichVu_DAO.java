@@ -32,7 +32,6 @@ public class DichVu_DAO {
 				int maDV = rs.getInt("MaDV");
 				String tenDV = rs.getString("TenDV");
 				double donG = rs.getDouble("DonGia");
-				
 
 				DichVu dv = new DichVu(maDV, tenDV, donG);
 				

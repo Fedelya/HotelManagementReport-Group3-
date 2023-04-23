@@ -9,12 +9,17 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.Menu;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -39,10 +45,16 @@ import javax.swing.table.DefaultTableModel;
 
 import connectDB.ConnectDB;
 import dao.HoaDonPhong_DAO;
+import dao.KhachHang_DAO;
+import dao.LoaiPhong_DAO;
+import dao.Phong_DAO;
 import entity.HoaDonDichVu;
 import entity.HoaDonPhong;
+import entity.KhachHang;
+import entity.LoaiPhong;
+import entity.Phong;
 
-public class GUI_DatPhong extends JFrame {
+public class GUI_DatPhong extends JFrame implements ActionListener{
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
@@ -75,7 +87,7 @@ public class GUI_DatPhong extends JFrame {
 	private JTable table;
 	private JComboBox<String> cboMaKhachHang;
 	private JComboBox<String> jcbLoaiKH;
-	private JComboBox<String> jcbMaPhong;
+	private JComboBox jcbMaPhong;
 	private JCheckBox jckKH1st;
 	private DefaultTableModel tableModelHD;
 	private JTable tableHD;
@@ -90,19 +102,34 @@ public class GUI_DatPhong extends JFrame {
 	private JMenuItem itemQuanLyPhong;
 	private JMenuItem itemQuanLyDichVu;
 	private JMenuItem itemQuanLyKhachHang;
-	
+	int maHD = 0;
+
 	private HoaDonPhong_DAO hdp_dao;
+	private KhachHang_DAO kh_dao;
+	private Phong_DAO phong_dao;
+	private LoaiPhong_DAO loaiPhong_dao;
+//	private ArrayList<HoaDonPhong> listHDP;
+	private ArrayList<LoaiPhong> listLP;
+	private ArrayList<KhachHang> listKH;
+	private ArrayList<Phong> listPhong;
+
+//	private DefaultComboBoxModel<String> modelMaPhong;
+//	private DefaultComboBoxModel<String> modelMaKH;
+//	private DefaultComboBoxModel<String> modelLoaiKH;
 
 	public GUI_DatPhong() {
-		
+
 		try {
 			ConnectDB.getInstance().connect();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		hdp_dao = new HoaDonPhong_DAO();
-		
+		kh_dao = new KhachHang_DAO();
+		phong_dao = new Phong_DAO();
+		loaiPhong_dao = new LoaiPhong_DAO();
+
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
 		pnlFull.setBounds(0, 0, 1000, 650);
@@ -319,7 +346,7 @@ public class GUI_DatPhong extends JFrame {
 		pnlDanhSachPhong.setLayout(null);
 
 		JScrollPane scroll;
-		String[] headers = { "Mã phòng", "Loại phòng", "sức chứa", "vị trí", "giá phòng" };
+		String[] headers = { "Mã phòng", "Loại phòng", "vị trí", "giá phòng" };
 
 		tableModel = new DefaultTableModel(headers, 0);
 
@@ -380,26 +407,153 @@ public class GUI_DatPhong extends JFrame {
 //		setResizable(false);
 		add(pnlFull);
 		pnlFull.setBackground(new Color(255, 230, 179));
-		
+
 		docDuLieuVaoTable();
+		docDSPhong();
+		
+		jckKH1st.addActionListener(this);
 	}
 
 	public static void main(String[] args) {
 		new GUI_DatPhong().setVisible(true);
 
 	}
-	
+
 	public void docDuLieuVaoTable() {
 		List<HoaDonPhong> list = hdp_dao.getalltbHoaDonPhong();
+		List<KhachHang> listKH = kh_dao.getalltbKhachHang();
+		List<Phong> listPhong = phong_dao.getallPhong();
+		List<LoaiPhong> listLP = loaiPhong_dao.getallLoaiPhong();
+
 		for (HoaDonPhong hdp : list) {
 			String date1 = formatDate(hdp.getNgayGioNhan());
 			String date2 = formatDate(hdp.getNgayGioTra());
-			tableModelHD.addRow(new Object[] { hdp.getMaHoaDon(), hdp.getKhachHang().getMaKhachHang(),hdp.getKhachHang().getTenKhachHang(),
-					hdp.getPhong().getMaPhong(),hdp.getPhong().getLoaiPhong(),date1,date2,hdp.getTinhTrang()});
+
+			String MaKH = hdp.getKhachHang().getMaKhachHang();
+			String tenKH = "";
+			for (KhachHang i : listKH) {
+				if (i.getMaKhachHang().equalsIgnoreCase(MaKH)) {
+					tenKH = i.getTenKhachHang();
+					break;
+				}
+			}
+			String tenLPhong = "";
+			for (Phong p : listPhong) {
+				int maLPhong = p.getLoaiPhong().getMaLoaiPhong();
+				for (LoaiPhong i : listLP) {
+					if (i.getMaLoaiPhong() == maLPhong) {
+						tenLPhong = i.getTenLoaiPhong();
+						break;
+					}
+				}
+				
+			}
+			tableModelHD.addRow(new Object[] { hdp.getMaHoaDon(), hdp.getKhachHang().getMaKhachHang(), tenKH,
+					hdp.getPhong().getMaPhong(),tenLPhong , date1, date2, hdp.getTinhTrang() });
+
 		}
 	}
 	private String formatDate(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
-        return sdf.format(date);
-    }
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
+		return sdf.format(date);
+	}
+	public void docDSPhong() {
+		List<Phong> listPhong = phong_dao.getallPhong();
+		List<LoaiPhong> listLP = loaiPhong_dao.getallLoaiPhong();
+		String tenLPhong = "";
+		double dongia = 0.0;
+		for (Phong p : listPhong) {
+			int maLPhong = p.getLoaiPhong().getMaLoaiPhong();
+			for (LoaiPhong i : listLP) {
+				if (i.getMaLoaiPhong() == maLPhong) {
+					tenLPhong = i.getTenLoaiPhong();
+					dongia = i.getDonGia();
+					break;
+				}
+			}
+			tableModel.addRow(new Object[] {p.getMaPhong(), tenLPhong,p.getViTri(),dongia});
+
+		}
+	}
+//	public void docHoaDon() {
+//		tableModelHD.setRowCount(0);
+//		for(int i=0;i<listHDP.size();i++) {
+//			int MaHD = listHDP.get(i).getMaHoaDon();
+//			String MaKH = listHDP.get(i).getKhachHang().getMaKhachHang();
+//			String tenKH = listHDP.get(i).getKhachHang().getTenKhachHang();
+//			Phong phong = listHDP.get(i).getPhong();
+//			Date NgayGioNhan = listHDP.get(i).getNgayGioNhan();
+//			Date NgayGioTra = listHDP.get(i).getNgayGioTra();
+//			
+//			String tinhTrang = "Đã đặt phòng";
+//			
+//			if(listHDP.get(i).getTinhTrang() == 1) {
+//				tinhTrang = "Đã nhận phòng";
+//			}else if(listHDP.get(i).getTinhTrang() == 0) {
+//				tinhTrang = "Đã thanh toán";
+//			}
+//			tableModelHD.addRow(new Object[] { MaHD, MaKH,tenKH, phong.getMaPhong(),phong.getLoaiPhong(),
+//					NgayGioNhan,NgayGioTra,tinhTrang});
+//			if(this.maHD == MaHD) {
+//				tableHD.addRowSelectionInterval(i, i);
+//			}
+//		}
+//	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		long ml = System.currentTimeMillis();
+		ml = ml/86400000*86400000;
+		Date now = new Date(ml);
+		if(o.equals(btnThem)) {
+			if(jckKH1st.isSelected()) {
+				if(txtTenKhachHang.getText().trim().equals("")) {
+					JOptionPane.showMessageDialog(this, "Tên khách hàng không được để trống");
+					return;
+				}
+				if(!txtTenKhachHang.getText().matches("^[0-9]{2,25}$")) {
+					JOptionPane.showMessageDialog(this, "Tên khách hàng không được chứa số và có ít nhất 2 kí tự");
+					txtTenKhachHang.selectAll();
+					txtTenKhachHang.requestFocus();
+					return;
+				}
+				if(txtCCCD.getText().trim().equals("")) {
+					JOptionPane.showMessageDialog(this, "CCCD không được để trống");
+					return;
+				}
+				if(!txtCCCD.getText().matches("^(\\d{9}|\\d{12}$)")) {
+					JOptionPane.showMessageDialog(this, "CCCD chỉ được chứa chữ số, bao gồm hoặc 12 kí tự");
+					txtCCCD.selectAll();
+					txtCCCD.requestFocus();
+					return;
+				}
+			}else {
+				if(cboMaKhachHang.getSelectedIndex()==0) {
+					JOptionPane.showMessageDialog(this, "Mã khách hàng không được để trống");
+				}
+			}
+			Date ngayHetHan = new Date(ml);
+			try {
+				ngayHetHan = dpNgayHetHanCCCD.getFullDate();
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			
+			if(!ngayHetHan.toString().equals(now.toString())&&ngayHetHan.before(now)) {
+				JOptionPane.showMessageDialog(this, "Giất tờ đã hết hạn, Không thể đặt phòng");
+				return;
+			}
+			
+			Date tuNgay = new Date(ml);
+			Date denNgay = new Date(ml);
+//			try {
+//                tuNgay = tuNgay.getFullDate();
+//                denNgay = dpTuNgay.getFullDate(); 
+//            } catch (ParseException e1) {
+//                // TODO Auto-generated catch block
+//                e1.printStackTrace();
+//            }
+		}
+	}
 }
