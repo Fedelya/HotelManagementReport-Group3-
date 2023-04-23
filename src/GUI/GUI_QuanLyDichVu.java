@@ -35,22 +35,30 @@ import entity.DichVu;
 import entity.KhachHang;
 import entity.LoaiPhong;
 
-public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionListener{
+public class GUI_QuanLyDichVu extends JFrame implements MouseListener, ActionListener {
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu, itemDatPhong, itemQuanLyHoaDon, itemQuanLyPhong, itemQuanLyDichVu,
-	itemQuanLyKhachHang, itemQuanLyNhanVien,  itemThongKeDichVu, itemThongKeKhachHang, itemThongKeNhanVien;
+			itemQuanLyKhachHang, itemQuanLyNhanVien, itemThongKeDichVu, itemThongKeKhachHang, itemThongKeNhanVien;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
 			menuQuanLyNhanVien, menuThongKe, subMenu;
 
 	private int x = 0, w = 150, h = 50;
-	private ImageIcon iconLogout = new ImageIcon(new ImageIcon("picture/logout-icon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-	private	ImageIcon iconUser = new ImageIcon(new ImageIcon("picture/user-icon.png").getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-	private ImageIcon iconThem = new ImageIcon(new ImageIcon("picture/add-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconXoa = new ImageIcon(new ImageIcon("picture/delete-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconSua = new ImageIcon(new ImageIcon("picture/update-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconLamMoi = new ImageIcon(new ImageIcon("picture/refesh-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconTim = new ImageIcon(new ImageIcon("picture/search-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-	private ImageIcon iconXemTatCa = new ImageIcon(new ImageIcon("picture/see_all-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconLogout = new ImageIcon(
+			new ImageIcon("picture/logout-icon.png").getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
+	private ImageIcon iconUser = new ImageIcon(
+			new ImageIcon("picture/user-icon.png").getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+	private ImageIcon iconThem = new ImageIcon(
+			new ImageIcon("picture/add-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconXoa = new ImageIcon(
+			new ImageIcon("picture/delete-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconSua = new ImageIcon(
+			new ImageIcon("picture/update-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconLamMoi = new ImageIcon(
+			new ImageIcon("picture/refesh-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconTim = new ImageIcon(
+			new ImageIcon("picture/search-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+	private ImageIcon iconXemTatCa = new ImageIcon(
+			new ImageIcon("picture/see_all-icon.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
 	private JLabel lblMadichvu;
 	private JTextField txtMadichvu;
 	private JLabel lblTendichvu;
@@ -65,103 +73,103 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 	private JTable table;
 	private DichVu_DAO dv_DAO;
 	private DichVu_DAO dv_Dao;
- 
+
 	public GUI_QuanLyDichVu() {
 		try {
 			ConnectDB.getInstance().connect();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		dv_DAO = new DichVu_DAO();
+
+		// Phần Left
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
 		pnlFull.setBounds(0, 0, 1000, 650);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(7, 0, 200, 650);
-//		menuBar.setLayout(new GridLayout(0, 1));
+//				menuBar.setLayout(new GridLayout(0, 1));
 		menuBar.setLayout(null);
 
-		JLabel lblUser = new JLabel("Tên Admin");
-		lblUser.setBounds(x, 10, w, 70);
+		JLabel lblUser = new JLabel("admin");
+		lblUser.setBounds(x, 30, w, 70);
 		menuBar.add(lblUser);
 		lblUser.setIcon(iconUser);
 
 		menuTrangChu = new JMenu("Trang Chủ");
 
-//		menuTrangChu.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuTrangChu.setVerticalTextPosition(SwingConstants.BOTTOM);
-		menuTrangChu.setBounds(x, 100, w, h);
-//		menuBar.add(menuTrangChu);
+//				menuTrangChu.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuTrangChu.setVerticalTextPosition(SwingConstants.BOTTOM);
+		menuTrangChu.setBounds(x, 140, w, h);
+//				menuBar.add(menuTrangChu);
 		itemTrangChu = new JMenuItem("Trang chủ");
 		menuTrangChu.add(itemTrangChu);
 		menuBar.add(menuTrangChu);
 
-//            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
-//            bar.add(sep1, "growy");
-		menuDatPhong = new JMenu(" Đặt phòng");
-//		menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuDatPhong);
-		menuDatPhong.setBounds(x, 160, w, h);
-		itemDatPhong = new JMenuItem(" Đặt phòng");
+//		            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
+//		            bar.add(sep1, "growy");
+		menuDatPhong = new JMenu("Đặt phòng");
+//				menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuDatPhong);
+		menuDatPhong.setBounds(x, 200, w, h);
+		itemDatPhong = new JMenuItem("Đặt phòng");
 		menuDatPhong.add(itemDatPhong);
 		menuBar.add(menuDatPhong);
 
 		menuQuanLyHoaDon = new JMenu("Quản Lý Hóa Đơn");
-//		menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyHoaDon);
-		menuQuanLyHoaDon.setBounds(x, 220, w, h);
+//				menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyHoaDon);
+		menuQuanLyHoaDon.setBounds(x, 260, w, h);
 		itemQuanLyHoaDon = new JMenuItem("Quản lý hóa đơn dịch vụ");
 		menuQuanLyHoaDon.add(itemQuanLyHoaDon);
 		menuBar.add(menuQuanLyHoaDon);
 
 		menuQuanLyDichVu = new JMenu("Quản Lý Dịch Vụ");
-//		menuQuanLyDichVu.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyDichVu.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyDichVu);
-		menuQuanLyDichVu.setBounds(x, 280, w, h);
+//				menuQuanLyDichVu.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyDichVu.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyDichVu);
+		menuQuanLyDichVu.setBounds(x, 320, w, h);
 		itemQuanLyPhong = new JMenuItem("Quản lý phòng");
 		itemQuanLyDichVu = new JMenuItem("Quản lý dịch vụ");
 		menuQuanLyDichVu.add(itemQuanLyPhong);
 		menuQuanLyDichVu.add(itemQuanLyDichVu);
 		menuBar.add(menuQuanLyDichVu);
 
-//            JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
-//            bar.add(sep2, "growy");
+//		            JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
+//		            bar.add(sep2, "growy");
 
 		menuQuanLyKhachHang = new JMenu("Quản Lý Khách Hàng");
-//		menuQuanLyKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyKhachHang.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyKhachHang);
-		menuQuanLyKhachHang.setBounds(x, 340, w, h);
+//				menuQuanLyKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyKhachHang.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyKhachHang);
+		menuQuanLyKhachHang.setBounds(x, 380, w, h);
 		itemQuanLyKhachHang = new JMenuItem("Quản lý khách hàng");
 		menuQuanLyKhachHang.add(itemQuanLyKhachHang);
 		menuBar.add(menuQuanLyKhachHang);
 
-		menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
-//		menuQuanLyNhanVien.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyNhanVien.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyNhanVien);
-		menuQuanLyNhanVien.setBounds(x, 400, w, h);
-		itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
-		menuQuanLyNhanVien.add(itemQuanLyNhanVien);
-		menuBar.add(menuQuanLyNhanVien);
+//				menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
+////				menuQuanLyNhanVien.setHorizontalTextPosition(SwingConstants.CENTER);
+////				menuQuanLyNhanVien.setVerticalTextPosition(SwingConstants.BOTTOM);
+////				menuBar.add(menuQuanLyNhanVien);
+//				menuQuanLyNhanVien.setBounds(x, 400, w, h);
+//				itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
+//				menuQuanLyNhanVien.add(itemQuanLyNhanVien);
+//				menuBar.add(menuQuanLyNhanVien);
 
 		JMenu menuThongKe = new JMenu("Thống kê");
-//		menuThongKe.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuThongKe.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuThongKe);
-		menuThongKe.setBounds(x, 460, w, h);
+//				menuThongKe.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuThongKe.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuThongKe);
+		menuThongKe.setBounds(x, 440, w, h);
 		itemThongKeDichVu = new JMenuItem("Thống kê dịch vụ");
 		itemThongKeKhachHang = new JMenuItem("Thống kê khách hàng");
-		itemThongKeNhanVien = new JMenuItem("Thống kê nhân viên");
-		
+
 		menuThongKe.add(itemThongKeDichVu);
 		menuThongKe.add(itemThongKeKhachHang);
-		menuThongKe.add(itemThongKeNhanVien);
 		menuBar.add(menuThongKe);
 
 		btnLogout = new JButton("Log out");
@@ -169,49 +177,47 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 		btnLogout.setBounds(20, 550, 120, 30);
 		menuBar.add(btnLogout);
 		pnlFull.add(menuBar);
-		//size
-		setTitle("Quản Lý Khách Hàng");
+		// size
+		setTitle("Quản Lý Dịch Vụ");
 		setSize(1000, 650);
 		setLocationRelativeTo(null);
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		add(pnlFull);
-		pnlFull.setBackground(new Color(255,230,179));
-		//right
+		pnlFull.setBackground(new Color(255, 230, 179));
+		// right
 		JLabel lblTitle = new JLabel("Quản Lý Dịch Vụ");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setBounds(350, 0, 500, 30);
 		lblTitle.setFont(new Font("Ariel", Font.BOLD, 25));
 		pnlFull.add(lblTitle);
-		
+
 		JPanel pnlThongTindichvu = new JPanel();
 		pnlThongTindichvu.setBorder(new TitledBorder(null, "Dịch Vụ"));
 		pnlThongTindichvu.setBounds(230, 40, 750, 200);
 		pnlFull.add(pnlThongTindichvu);
-		
+
 		pnlThongTindichvu.setLayout(null);
-		
-		
+
 		lblMadichvu = new JLabel("Mã dịch vụ:");
 		lblMadichvu.setBounds(10, 20, 100, 30);
 		pnlThongTindichvu.add(lblMadichvu);
-		
+
 		txtMadichvu = new JTextField();
-		//txtMadichvu.setEditable(false);
+		// txtMadichvu.setEditable(false);
 		txtMadichvu.setBounds(110, 25, 250, 25);
-        pnlThongTindichvu.add(txtMadichvu);
-        txtMadichvu.setColumns(10);
-		
-        
-        lblTendichvu = new JLabel("Tên dịch vụ:");
-        lblTendichvu.setBounds(390, 20, 100, 30);
-        pnlThongTindichvu.add(lblTendichvu);
-        
-        txtTendichvu = new JTextField();
-        txtTendichvu.setBounds(490, 25, 250, 25);
-        pnlThongTindichvu.add(txtTendichvu);
-        txtTendichvu.setColumns(10);
+		pnlThongTindichvu.add(txtMadichvu);
+		txtMadichvu.setColumns(10);
+
+		lblTendichvu = new JLabel("Tên dịch vụ:");
+		lblTendichvu.setBounds(390, 20, 100, 30);
+		pnlThongTindichvu.add(lblTendichvu);
+
+		txtTendichvu = new JTextField();
+		txtTendichvu.setBounds(490, 25, 250, 25);
+		pnlThongTindichvu.add(txtTendichvu);
+		txtTendichvu.setColumns(10);
 //        lblsoluong = new JLabel("Số lượng:");
 //        lblsoluong.setBounds(390, 20, 100, 30);
 //        pnlThongTindichvu.add(lblsoluong);
@@ -220,36 +226,36 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 //        txtsoluong.setBounds(490, 25, 250, 25);
 //        pnlThongTindichvu.add(txtsoluong);
 //        txtsoluong.setColumns(10);
-        lbldongia = new JLabel("Đơn Giá");
-        lbldongia.setBounds(150, 80, 100, 30);
-        pnlThongTindichvu.add(lbldongia);
-        
-        txtdongia = new JTextField();
-        txtdongia.setBounds(250, 85, 250, 25);
-        pnlThongTindichvu.add(txtdongia);
-        txtdongia.setColumns(10);
-        //them button
-        btnThem = new JButton("Add");
-        btnThem.setBounds(130, 150, 100, 30);
-        btnThem.setIcon(iconThem);
-        pnlThongTindichvu.add(btnThem);
-        
-        btnXoa = new JButton("Delete");
-        btnXoa.setBounds(260, 150, 100, 30);
-        btnXoa.setIcon(iconXoa);
-        pnlThongTindichvu.add(btnXoa);
-        
-        btnSua = new JButton("Update");
-        btnSua.setBounds(390, 150, 100, 30);
-        btnSua.setIcon(iconSua);
-        pnlThongTindichvu.add(btnSua);
-        
-        btnLamMoi = new JButton("Refesh");
-        btnLamMoi.setBounds(520, 150, 100, 30);
-        btnLamMoi.setIcon(iconLamMoi);
-        pnlThongTindichvu.add(btnLamMoi);
-        //danh sach dich vu
-        JPanel pnlDanhSachdichvu = new JPanel();
+		lbldongia = new JLabel("Đơn Giá");
+		lbldongia.setBounds(150, 80, 100, 30);
+		pnlThongTindichvu.add(lbldongia);
+
+		txtdongia = new JTextField();
+		txtdongia.setBounds(250, 85, 250, 25);
+		pnlThongTindichvu.add(txtdongia);
+		txtdongia.setColumns(10);
+		// them button
+		btnThem = new JButton("Add");
+		btnThem.setBounds(130, 150, 100, 30);
+		btnThem.setIcon(iconThem);
+		pnlThongTindichvu.add(btnThem);
+
+		btnXoa = new JButton("Delete");
+		btnXoa.setBounds(260, 150, 100, 30);
+		btnXoa.setIcon(iconXoa);
+		pnlThongTindichvu.add(btnXoa);
+
+		btnSua = new JButton("Update");
+		btnSua.setBounds(390, 150, 100, 30);
+		btnSua.setIcon(iconSua);
+		pnlThongTindichvu.add(btnSua);
+
+		btnLamMoi = new JButton("Refesh");
+		btnLamMoi.setBounds(520, 150, 100, 30);
+		btnLamMoi.setIcon(iconLamMoi);
+		pnlThongTindichvu.add(btnLamMoi);
+		// danh sach dich vu
+		JPanel pnlDanhSachdichvu = new JPanel();
 		pnlDanhSachdichvu.setBorder(new TitledBorder(null, "Danh Sách Dịch Vụ"));
 		pnlDanhSachdichvu.setBounds(230, 250, 750, 360);
 		pnlFull.add(pnlDanhSachdichvu);
@@ -291,32 +297,37 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 		btnThem.addActionListener(this);
 		btnTim.addActionListener(this);
 		table.addMouseListener(this);
-		
-		
-		
-		
 
-        
-        
-        
+		// add sự kiện cho menu
+		itemDatPhong.addActionListener(this);
+		itemQuanLyDichVu.addActionListener(this);
+		itemQuanLyHoaDon.addActionListener(this);
+		itemQuanLyKhachHang.addActionListener(this);
+		itemQuanLyPhong.addActionListener(this);
+		itemThongKeDichVu.addActionListener(this);
+		itemThongKeKhachHang.addActionListener(this);
+		itemTrangChu.addActionListener(this);
+		btnLogout.addActionListener(this);
 		docDuLieuVaoTable();
-		
+
 	}
+
 	public static void main(String[] args) {
 		new GUI_QuanLyDichVu().setVisible(true);
 	}
+
 	public void docDuLieuVaoTable() {
 		List<DichVu> list = dv_DAO.getalltbDichVu();
 		for (DichVu dv : list) {
-			
-			tableModel.addRow(new Object[] { dv.getMaDichVu(), dv.getTenDichVu(), dv.getDonGia()
-					});
+
+			tableModel.addRow(new Object[] { dv.getMaDichVu(), dv.getTenDichVu(), dv.getDonGia() });
 		}
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+
 		Object o = e.getSource();
 
 		if (o.equals(btnTim)) {
@@ -339,17 +350,15 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 					tableModel.addRow(new Object[] { dv.getMaDichVu(), dv.getTenDichVu(), dv.getDonGia() });
 				}
 			}
-		}else if (o.equals(btnXemTatCa)) {
-		tableModel.getDataVector().removeAllElements();
-		docDuLieuVaoTable();
-	}
-		else if (o.equals(btnLamMoi)) {
+		} else if (o.equals(btnXemTatCa)) {
+			tableModel.getDataVector().removeAllElements();
+			docDuLieuVaoTable();
+		} else if (o.equals(btnLamMoi)) {
 			txtMadichvu.setText("");
 			txtTendichvu.setText("");
 			txtdongia.setText("");
 			txtTendichvus.setText("");
-		}
-		else if (o.equals(btnThem)) {
+		} else if (o.equals(btnThem)) {
 			int ma = Integer.parseInt(txtMadichvu.getText());
 			String ten = txtTendichvu.getText();
 			double donGia = Double.parseDouble(txtdongia.getText());
@@ -357,13 +366,12 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 
 			try {
 				dv_DAO.insert(dv);
-				tableModel.addRow(new Object[] { dv.getMaDichVu(),dv.getTenDichVu(), dv.getDonGia() });
+				tableModel.addRow(new Object[] { dv.getMaDichVu(), dv.getTenDichVu(), dv.getDonGia() });
 				JOptionPane.showMessageDialog(this, "them thanh cong");
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(this, "Trùng");
 			}
-		}
-		else if (o.equals(btnSua)) {
+		} else if (o.equals(btnSua)) {
 			int row = table.getSelectedRow();
 			int ma = Integer.parseInt(txtMadichvu.getText());
 			String ten = txtTendichvu.getText();
@@ -382,8 +390,7 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 			} else {
 				JOptionPane.showMessageDialog(this, "Chon dong can xoa");
 			}
-		}
-		else if (o.equals(btnXoa)) {
+		} else if (o.equals(btnXoa)) {
 			int row = table.getSelectedRow();
 			try {
 				if (row == -1) {
@@ -392,26 +399,55 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 					DichVu dv = null;
 					dv = getDataInFormDichVu();
 					int ma = dv.getMaDichVu();
-			int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn xoá dòng đã chọn ?", "Cảnh báo",
-								JOptionPane.YES_NO_OPTION);
+					int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn xoá dòng đã chọn ?", "Cảnh báo",
+							JOptionPane.YES_NO_OPTION);
 					if (ans == JOptionPane.YES_OPTION) {
-							dv_DAO.delete(ma);
-							tableModel.removeRow(row);
-							JOptionPane.showMessageDialog(this, "Xóa thành công");
-							
-							
-						}
+						dv_DAO.delete(ma);
+						tableModel.removeRow(row);
+						JOptionPane.showMessageDialog(this, "Xóa thành công");
+
 					}
-				}catch (Exception e3) {
+				}
+			} catch (Exception e3) {
 				JOptionPane.showMessageDialog(this, "Xoa khong thanh cong");
 			}
-			}
-		
+		}
 
-		
+		// Menu
+		else if (o.equals(itemDatPhong)) {
+			this.dispose();
+			new GUI_DatPhong().setVisible(true);
+//		} else if (o.equals(itemQuanLyDichVu)) {
+//			this.dispose();
+//			new GUI_QuanLyDichVu().setVisible(true);
+		} else if (o.equals(itemQuanLyHoaDon)) {
+			this.dispose();
+			new GUI_QuanLyHoaDonDichVu().setVisible(true);
+		} else if (o.equals(itemQuanLyKhachHang)) {
+			this.dispose();
+			new GUI_QuanLyKhachHang().setVisible(true);
+		} else if (o.equals(itemThongKeDichVu)) {
+			this.dispose();
+			new GUI_ThongKeDichVu().setVisible(true);
+		} else if (o.equals(itemThongKeKhachHang)) {
+			this.dispose();
+			new GUI_ThongKeKhachHang().setVisible(true);
+		} else if (o.equals(itemTrangChu)) {
+			this.dispose();
+			new GUI_TrangChu().setVisible(true);
+		} else if (o.equals(itemQuanLyPhong)) {
+			this.dispose();
+			new GUI_QuanLyPhong().setVisible(true);
+		} else if (o.equals(btnLogout)) {
+			int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn đăng xuất ?", "Cảnh báo",
+					JOptionPane.YES_NO_OPTION);
+			if (ans == JOptionPane.YES_OPTION) {
+				this.dispose();
+				new GUI_DangNhap().setVisible(true);
+			}
+		}
 	}
-	
-	
+
 	public DichVu getDataInFormDichVu() {
 		int maDV = Integer.parseInt(txtMadichvu.getText().trim());
 		String tenDV = txtTendichvu.getText().trim();
@@ -419,8 +455,7 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 		DichVu dv = new DichVu(maDV, tenDV, donGia);
 		return dv;
 	}
-	
-	
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Object o = e.getSource();
@@ -432,32 +467,33 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener ,ActionLis
 			txtdongia.setText(tableModel.getValueAt(row, 2).toString());
 
 		}
-		
 
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
 
 }
-

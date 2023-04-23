@@ -109,69 +109,93 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 		lp_Dao = new LoaiPhong_DAO();
 		phong_Dao = new Phong_DAO();
 
-		setLayout(null);
-
+		// Phần Left
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
 		pnlFull.setBounds(0, 0, 1000, 650);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(7, 0, 200, 650);
+//				menuBar.setLayout(new GridLayout(0, 1));
 		menuBar.setLayout(null);
 
-		JLabel lblUser = new JLabel("Tên Admin");
-		lblUser.setBounds(x, 10, w, 70);
+		JLabel lblUser = new JLabel("admin");
+		lblUser.setBounds(x, 30, w, 70);
 		menuBar.add(lblUser);
 		lblUser.setIcon(iconUser);
 
 		menuTrangChu = new JMenu("Trang Chủ");
 
-		menuTrangChu.setBounds(x, 100, w, h);
+//				menuTrangChu.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuTrangChu.setVerticalTextPosition(SwingConstants.BOTTOM);
+		menuTrangChu.setBounds(x, 140, w, h);
+//				menuBar.add(menuTrangChu);
 		itemTrangChu = new JMenuItem("Trang chủ");
 		menuTrangChu.add(itemTrangChu);
 		menuBar.add(menuTrangChu);
 
+//		            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
+//		            bar.add(sep1, "growy");
 		menuDatPhong = new JMenu("Đặt phòng");
-		menuDatPhong.setBounds(x, 160, w, h);
+//				menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuDatPhong);
+		menuDatPhong.setBounds(x, 200, w, h);
 		itemDatPhong = new JMenuItem("Đặt phòng");
 		menuDatPhong.add(itemDatPhong);
 		menuBar.add(menuDatPhong);
 
 		menuQuanLyHoaDon = new JMenu("Quản Lý Hóa Đơn");
-		menuQuanLyHoaDon.setBounds(x, 220, w, h);
+//				menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyHoaDon);
+		menuQuanLyHoaDon.setBounds(x, 260, w, h);
 		itemQuanLyHoaDon = new JMenuItem("Quản lý hóa đơn dịch vụ");
 		menuQuanLyHoaDon.add(itemQuanLyHoaDon);
 		menuBar.add(menuQuanLyHoaDon);
 
 		menuQuanLyDichVu = new JMenu("Quản Lý Dịch Vụ");
-		menuQuanLyDichVu.setBounds(x, 280, w, h);
+//				menuQuanLyDichVu.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyDichVu.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyDichVu);
+		menuQuanLyDichVu.setBounds(x, 320, w, h);
 		itemQuanLyPhong = new JMenuItem("Quản lý phòng");
 		itemQuanLyDichVu = new JMenuItem("Quản lý dịch vụ");
 		menuQuanLyDichVu.add(itemQuanLyPhong);
 		menuQuanLyDichVu.add(itemQuanLyDichVu);
 		menuBar.add(menuQuanLyDichVu);
 
+//		            JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
+//		            bar.add(sep2, "growy");
+
 		menuQuanLyKhachHang = new JMenu("Quản Lý Khách Hàng");
-		menuQuanLyKhachHang.setBounds(x, 340, w, h);
+//				menuQuanLyKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyKhachHang.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyKhachHang);
+		menuQuanLyKhachHang.setBounds(x, 380, w, h);
 		itemQuanLyKhachHang = new JMenuItem("Quản lý khách hàng");
 		menuQuanLyKhachHang.add(itemQuanLyKhachHang);
 		menuBar.add(menuQuanLyKhachHang);
 
-		menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
-		menuQuanLyNhanVien.setBounds(x, 400, w, h);
-		itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
-		menuQuanLyNhanVien.add(itemQuanLyNhanVien);
-		menuBar.add(menuQuanLyNhanVien);
+//				menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
+////				menuQuanLyNhanVien.setHorizontalTextPosition(SwingConstants.CENTER);
+////				menuQuanLyNhanVien.setVerticalTextPosition(SwingConstants.BOTTOM);
+////				menuBar.add(menuQuanLyNhanVien);
+//				menuQuanLyNhanVien.setBounds(x, 400, w, h);
+//				itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
+//				menuQuanLyNhanVien.add(itemQuanLyNhanVien);
+//				menuBar.add(menuQuanLyNhanVien);
 
 		JMenu menuThongKe = new JMenu("Thống kê");
-		menuThongKe.setBounds(x, 460, w, h);
+//				menuThongKe.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuThongKe.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuThongKe);
+		menuThongKe.setBounds(x, 440, w, h);
 		itemThongKeDichVu = new JMenuItem("Thống kê dịch vụ");
 		itemThongKeKhachHang = new JMenuItem("Thống kê khách hàng");
-		itemThongKeNhanVien = new JMenuItem("Thống kê nhân viên");
 
 		menuThongKe.add(itemThongKeDichVu);
 		menuThongKe.add(itemThongKeKhachHang);
-		menuThongKe.add(itemThongKeNhanVien);
 		menuBar.add(menuThongKe);
 
 		btnLogout = new JButton("Log out");
@@ -720,9 +744,10 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 		} else if (o.equals(itemTrangChu)) {
 			this.dispose();
 			new GUI_TrangChu().setVisible(true);
-		}
-
-		else if (o.equals(btnLogout)) {
+//		} else if (o.equals(itemQuanLyPhong)) {
+//			this.dispose();
+//			new GUI_QuanLyPhong().setVisible(true);
+		} else if (o.equals(btnLogout)) {
 			int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn đăng xuất ?", "Cảnh báo",
 					JOptionPane.YES_NO_OPTION);
 			if (ans == JOptionPane.YES_OPTION) {

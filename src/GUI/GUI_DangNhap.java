@@ -98,6 +98,7 @@ public class GUI_DangNhap extends JFrame implements ActionListener {
 			String maTK = txtPassword.getText();
 			if (tenTK.equals("admin") && maTK.equals("admin")) {
 				JOptionPane.showMessageDialog(this, "Dang nhap thanh cong");
+				this.dispose();
 				new GUI_TrangChu().setVisible(true);
 			} else {
 				JOptionPane.showMessageDialog(this, "Sai mk hoac tai khoan");

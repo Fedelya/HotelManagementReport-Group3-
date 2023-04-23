@@ -176,94 +176,93 @@ public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, Mouse
 
 		kh_DAO = new KhachHang_DAO();
 
+		// Phần Left
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
 		pnlFull.setBounds(0, 0, 1000, 650);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(7, 0, 200, 650);
-//		menuBar.setLayout(new GridLayout(0, 1));
+//				menuBar.setLayout(new GridLayout(0, 1));
 		menuBar.setLayout(null);
 
 		JLabel lblUser = new JLabel("admin");
-		lblUser.setBounds(x, 10, w, 70);
+		lblUser.setBounds(x, 30, w, 70);
 		menuBar.add(lblUser);
 		lblUser.setIcon(iconUser);
 
 		menuTrangChu = new JMenu("Trang Chủ");
 
-//		menuTrangChu.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuTrangChu.setVerticalTextPosition(SwingConstants.BOTTOM);
-		menuTrangChu.setBounds(x, 100, w, h);
-//		menuBar.add(menuTrangChu);
+//				menuTrangChu.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuTrangChu.setVerticalTextPosition(SwingConstants.BOTTOM);
+		menuTrangChu.setBounds(x, 140, w, h);
+//				menuBar.add(menuTrangChu);
 		itemTrangChu = new JMenuItem("Trang chủ");
 		menuTrangChu.add(itemTrangChu);
 		menuBar.add(menuTrangChu);
 
-//            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
-//            bar.add(sep1, "growy");
+//		            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
+//		            bar.add(sep1, "growy");
 		menuDatPhong = new JMenu("Đặt phòng");
-//		menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuDatPhong);
-		menuDatPhong.setBounds(x, 160, w, h);
+//				menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuDatPhong);
+		menuDatPhong.setBounds(x, 200, w, h);
 		itemDatPhong = new JMenuItem("Đặt phòng");
 		menuDatPhong.add(itemDatPhong);
 		menuBar.add(menuDatPhong);
 
 		menuQuanLyHoaDon = new JMenu("Quản Lý Hóa Đơn");
-//		menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyHoaDon);
-		menuQuanLyHoaDon.setBounds(x, 220, w, h);
+//				menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyHoaDon);
+		menuQuanLyHoaDon.setBounds(x, 260, w, h);
 		itemQuanLyHoaDon = new JMenuItem("Quản lý hóa đơn dịch vụ");
 		menuQuanLyHoaDon.add(itemQuanLyHoaDon);
 		menuBar.add(menuQuanLyHoaDon);
 
 		menuQuanLyDichVu = new JMenu("Quản Lý Dịch Vụ");
-//		menuQuanLyDichVu.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyDichVu.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyDichVu);
-		menuQuanLyDichVu.setBounds(x, 280, w, h);
+//				menuQuanLyDichVu.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyDichVu.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyDichVu);
+		menuQuanLyDichVu.setBounds(x, 320, w, h);
 		itemQuanLyPhong = new JMenuItem("Quản lý phòng");
 		itemQuanLyDichVu = new JMenuItem("Quản lý dịch vụ");
 		menuQuanLyDichVu.add(itemQuanLyPhong);
 		menuQuanLyDichVu.add(itemQuanLyDichVu);
 		menuBar.add(menuQuanLyDichVu);
 
-//            JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
-//            bar.add(sep2, "growy");
+//		            JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
+//		            bar.add(sep2, "growy");
 
 		menuQuanLyKhachHang = new JMenu("Quản Lý Khách Hàng");
-//		menuQuanLyKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyKhachHang.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyKhachHang);
-		menuQuanLyKhachHang.setBounds(x, 340, w, h);
+//				menuQuanLyKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuQuanLyKhachHang.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuQuanLyKhachHang);
+		menuQuanLyKhachHang.setBounds(x, 380, w, h);
 		itemQuanLyKhachHang = new JMenuItem("Quản lý khách hàng");
 		menuQuanLyKhachHang.add(itemQuanLyKhachHang);
 		menuBar.add(menuQuanLyKhachHang);
 
-		menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
-//		menuQuanLyNhanVien.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuQuanLyNhanVien.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuQuanLyNhanVien);
-		menuQuanLyNhanVien.setBounds(x, 400, w, h);
-		itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
-		menuQuanLyNhanVien.add(itemQuanLyNhanVien);
-		menuBar.add(menuQuanLyNhanVien);
+//				menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
+////				menuQuanLyNhanVien.setHorizontalTextPosition(SwingConstants.CENTER);
+////				menuQuanLyNhanVien.setVerticalTextPosition(SwingConstants.BOTTOM);
+////				menuBar.add(menuQuanLyNhanVien);
+//				menuQuanLyNhanVien.setBounds(x, 400, w, h);
+//				itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
+//				menuQuanLyNhanVien.add(itemQuanLyNhanVien);
+//				menuBar.add(menuQuanLyNhanVien);
 
 		JMenu menuThongKe = new JMenu("Thống kê");
-//		menuThongKe.setHorizontalTextPosition(SwingConstants.CENTER);
-//		menuThongKe.setVerticalTextPosition(SwingConstants.BOTTOM);
-//		menuBar.add(menuThongKe);
-		menuThongKe.setBounds(x, 460, w, h);
+//				menuThongKe.setHorizontalTextPosition(SwingConstants.CENTER);
+//				menuThongKe.setVerticalTextPosition(SwingConstants.BOTTOM);
+//				menuBar.add(menuThongKe);
+		menuThongKe.setBounds(x, 440, w, h);
 		itemThongKeDichVu = new JMenuItem("Thống kê dịch vụ");
 		itemThongKeKhachHang = new JMenuItem("Thống kê khách hàng");
-		itemThongKeNhanVien = new JMenuItem("Thống kê nhân viên");
 
 		menuThongKe.add(itemThongKeDichVu);
 		menuThongKe.add(itemThongKeKhachHang);
-		menuThongKe.add(itemThongKeNhanVien);
 		menuBar.add(menuThongKe);
 
 		btnLogout = new JButton("Log out");
@@ -419,6 +418,17 @@ public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, Mouse
 		// add sự kiện phím enter
 
 		txtTenKhachHangDSKH.addKeyListener(this);
+
+		// add sự kiện cho menu
+		itemDatPhong.addActionListener(this);
+		itemQuanLyDichVu.addActionListener(this);
+		itemQuanLyHoaDon.addActionListener(this);
+		itemQuanLyKhachHang.addActionListener(this);
+		itemQuanLyPhong.addActionListener(this);
+		itemThongKeDichVu.addActionListener(this);
+		itemThongKeKhachHang.addActionListener(this);
+		itemTrangChu.addActionListener(this);
+		btnLogout.addActionListener(this);
 	}
 
 	public static void main(String[] args) {
@@ -497,6 +507,7 @@ public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, Mouse
 		if (o.equals(table)) {
 			int row = table.getSelectedRow();
 			txtMaKhachHang.setText(tableModel.getValueAt(row, 0).toString());
+			txtMaKhachHang.setEditable(false);
 			txtTenKhachHang.setText(tableModel.getValueAt(row, 1).toString());
 			cbQuocTich.setSelectedItem(tableModel.getValueAt(row, 2).toString());
 			txtCCCD.setText(tableModel.getValueAt(row, 3).toString());
@@ -545,51 +556,56 @@ public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, Mouse
 			dpNgayHetHanCCCD.setValueToDay();
 			txtMaKhachHang.requestFocus();
 			txtMaKhachHang.setText("KH");
+			txtMaKhachHang.setEditable(true);
 		} else if (o.equals(btnThem)) {
-//			if (validData(ADD)) {
-			
-			String maKH = txtMaKhachHang.getText().trim();
-			String tenKH = txtTenKhachHang.getText().trim();
-			String quocTich = cbQuocTich.getSelectedItem().toString();
-			String cccd = txtCCCD.getText().trim();
-			Date now = null;
-			Date ngayHetHan = null;
-			try {
-				now = dpNgayHetHanCCCD.getValueToDay();
-				ngayHetHan = dpNgayHetHanCCCD.getFullDate();
-			} catch (ParseException e3) {
-				e3.printStackTrace();
-			}
-			KhachHang kh = new KhachHang(maKH, tenKH, quocTich, cccd, ngayHetHan);
+			if (validData(ADD)) {
+
+				String maKH = txtMaKhachHang.getText().trim();
+				String tenKH = txtTenKhachHang.getText().trim();
+				String quocTich = cbQuocTich.getSelectedItem().toString();
+				String cccd = txtCCCD.getText().trim();
+				Date now = null;
+				Date ngayHetHan = null;
+				try {
+					now = dpNgayHetHanCCCD.getValueToDay();
+					ngayHetHan = dpNgayHetHanCCCD.getFullDate();
+				} catch (ParseException e3) {
+					e3.printStackTrace();
+				}
+				KhachHang kh = new KhachHang(maKH, tenKH, quocTich, cccd, ngayHetHan);
 
 				try {
-					kh_DAO.insert(kh);
-					String date = formatDate(kh.getNgayHetHanCCCD());
-					tableModel.addRow(new Object[] { kh.getMaKhachHang(), kh.getTenKhachHang(), kh.getQuocTich(),
-							kh.getCCCD(), date });
-					JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công");
-					tableModel.fireTableDataChanged();
-					loadListKhachHang();
+					if (kh_DAO.insert(kh)) {
+						String date = formatDate(kh.getNgayHetHanCCCD());
+						tableModel.addRow(new Object[] { kh.getMaKhachHang(), kh.getTenKhachHang(), kh.getQuocTich(),
+								kh.getCCCD(), date });
+						JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công");
+						tableModel.fireTableDataChanged();
+						loadListKhachHang();
+					}
+//					else {
+//						JOptionPane.showMessageDialog(this, "Trùng");
+//					}
 
-				} catch (Exception e2) {
+				} catch (SQLException e2) {
 					JOptionPane.showMessageDialog(this, "Thêm khách hàng thất bại");
 				}
-//			}
-		} else if (o.equals(btnSua)) {
-//			if (validData(UPDATE)) {
-			String maKH = txtMaKhachHang.getText().trim();
-			String tenKH = txtTenKhachHang.getText().trim();
-			String quocTich = cbQuocTich.getSelectedItem().toString();
-			String cccd = txtCCCD.getText().trim();
-			Date now = null;
-			Date ngayHetHan = null;
-			try {
-				now = dpNgayHetHanCCCD.getValueToDay();
-				ngayHetHan = dpNgayHetHanCCCD.getFullDate();
-			} catch (ParseException e3) {
-				e3.printStackTrace();
 			}
-			KhachHang kh = new KhachHang(maKH, tenKH, quocTich, cccd, ngayHetHan);
+		} else if (o.equals(btnSua)) {
+			if (validData(UPDATE)) {
+				String maKH = txtMaKhachHang.getText().trim();
+				String tenKH = txtTenKhachHang.getText().trim();
+				String quocTich = cbQuocTich.getSelectedItem().toString();
+				String cccd = txtCCCD.getText().trim();
+				Date now = null;
+				Date ngayHetHan = null;
+				try {
+					now = dpNgayHetHanCCCD.getValueToDay();
+					ngayHetHan = dpNgayHetHanCCCD.getFullDate();
+				} catch (ParseException e3) {
+					e3.printStackTrace();
+				}
+				KhachHang kh = new KhachHang(maKH, tenKH, quocTich, cccd, ngayHetHan);
 
 				int row = table.getSelectedRow();
 				try {
@@ -610,7 +626,7 @@ public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, Mouse
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
-//			}
+			}
 		} else if (o.equals(btnXoa)) {
 			int row = table.getSelectedRow();
 			try {
@@ -655,16 +671,41 @@ public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, Mouse
 				JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng");
 			else
 				docDuLieuVaoTable();
+		}
+		// Menu
+		else if (o.equals(itemDatPhong)) {
+			this.dispose();
+			new GUI_DatPhong().setVisible(true);
+		} else if (o.equals(itemQuanLyDichVu)) {
+			this.dispose();
+			new GUI_QuanLyDichVu().setVisible(true);
+		} else if (o.equals(itemQuanLyHoaDon)) {
+			this.dispose();
+			new GUI_QuanLyHoaDonDichVu().setVisible(true);
+//		} else if (o.equals(itemQuanLyKhachHang)) {
+//			this.dispose();
+//			new GUI_QuanLyKhachHang().setVisible(true);
+		} else if (o.equals(itemThongKeDichVu)) {
+			this.dispose();
+			new GUI_ThongKeDichVu().setVisible(true);
+		} else if (o.equals(itemThongKeKhachHang)) {
+			this.dispose();
+			new GUI_ThongKeKhachHang().setVisible(true);
+		} else if (o.equals(itemTrangChu)) {
+			this.dispose();
+			new GUI_TrangChu().setVisible(true);
+		} else if (o.equals(itemQuanLyPhong)) {
+			this.dispose();
+			new GUI_QuanLyPhong().setVisible(true);
 		} else if (o.equals(btnLogout)) {
-			int response = JOptionPane.showConfirmDialog(null, "Bạn muốn đăng xuất", "Đăng xuất",
+			int ans = JOptionPane.showConfirmDialog(this, "Bạn có muốn đăng xuất ?", "Cảnh báo",
 					JOptionPane.YES_NO_OPTION);
-			if (response == JOptionPane.NO_OPTION) {
-
-			} else if (response == JOptionPane.YES_OPTION) {
+			if (ans == JOptionPane.YES_OPTION) {
 				this.dispose();
 				new GUI_DangNhap().setVisible(true);
 			}
 		}
+
 	}
 
 	public boolean validData(int type) {
@@ -674,12 +715,20 @@ public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, Mouse
 		if (!(maKH.length() > 0 && maKH.matches("(KH)\\d{1,4}"))) {
 			JOptionPane.showMessageDialog(this, "Lỗi: Mã khách hàng phải là KH1, KH2, KH3...");
 			return false;
+		} else {
+			if (type == ADD)
+				for (KhachHang khachHang : dsKH) {
+					if (khachHang.getMaKhachHang().equalsIgnoreCase(maKH)) {
+						JOptionPane.showMessageDialog(this, "Lỗi: Mã khách hàng đã tồn tại");
+						return false;
+					}
+				}
 		}
 		if (!(tenKH.length() > 0 && tenKH.matches("^[^0-9]+$"))) {
 			JOptionPane.showMessageDialog(this, "Lỗi: Tên không được để trống");
 			return false;
 		}
-		if (!(cmnd.length() > 0 && cmnd.matches("^(\\d{9}$"))) {
+		if (!(cmnd.length() > 0 && cmnd.matches("^(\\d{9})$"))) {
 			JOptionPane.showMessageDialog(this, "Lỗi: CMND phải có 9 số");
 			return false;
 		} else {

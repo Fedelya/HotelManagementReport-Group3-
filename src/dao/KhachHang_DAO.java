@@ -119,7 +119,7 @@ public class KhachHang_DAO {
 		return dskh;
 	}
 
-	public boolean insert(KhachHang kh) {
+	public boolean insert(KhachHang kh) throws SQLException{
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement statement = null;

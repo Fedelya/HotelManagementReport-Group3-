@@ -132,4 +132,26 @@ public class ChiTietDichVu_DAO {
 		return dataList;
 	}
 
+	public ArrayList<ChiTietDichVu> getListCTDVByDate(Date tuNgay, Date denNgay){
+		ArrayList<ChiTietDichVu> dataList = new ArrayList<ChiTietDichVu>();
+		ConnectDB.getInstance();
+		PreparedStatement statement = null;
+		Connection con = ConnectDB.getConnection();
+		try {
+			String sql = "EXEC Proc_LocChiTietHoaDonTheoNgay ?, ?";
+			statement = con.prepareStatement(sql);
+			statement.setDate(1, tuNgay);
+			statement.setDate(2, denNgay);
+			
+			ResultSet rs = statement.executeQuery();
+			while(rs.next()) {
+				ChiTietDichVu chiTietDichVu = new ChiTietDichVu(rs);
+				dataList.add(chiTietDichVu);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dataList;
+	}
+	
 }
