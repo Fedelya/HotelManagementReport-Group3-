@@ -9,8 +9,11 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.Menu;
+import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -48,13 +51,14 @@ import dao.HoaDonPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
 import dao.Phong_DAO;
+import entity.DichVu;
 import entity.HoaDonDichVu;
 import entity.HoaDonPhong;
 import entity.KhachHang;
 import entity.LoaiPhong;
 import entity.Phong;
 
-public class GUI_DatPhong extends JFrame implements ActionListener {
+public class GUI_DatPhong extends JFrame implements ActionListener, MouseListener {
 	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
@@ -112,6 +116,12 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 	private ArrayList<LoaiPhong> listLP;
 	private ArrayList<KhachHang> listKH;
 	private ArrayList<Phong> listPhong;
+	private DatePicker dpTuNgay;
+	private DatePicker dpDenNgay;
+	private String tinhTrang;
+	private JTextField txtTenKhachHang1;
+	private JButton btnAdd;
+	private ArrayList<HoaDonPhong> dshdp;
 
 //	private DefaultComboBoxModel<String> modelMaPhong;
 //	private DefaultComboBoxModel<String> modelMaKH;
@@ -125,98 +135,101 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 
+		listKH = new ArrayList<KhachHang>();
+
 		hdp_dao = new HoaDonPhong_DAO();
 		kh_dao = new KhachHang_DAO();
 		phong_dao = new Phong_DAO();
 		loaiPhong_dao = new LoaiPhong_DAO();
 
-		// Phần Left
 		JPanel pnlFull = new JPanel();
 		pnlFull.setLayout(null);
 		pnlFull.setBounds(0, 0, 1000, 650);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(7, 0, 200, 650);
-//				menuBar.setLayout(new GridLayout(0, 1));
+//		menuBar.setLayout(new GridLayout(0, 1));
 		menuBar.setLayout(null);
 
-		JLabel lblUser = new JLabel("admin");
-		lblUser.setBounds(x, 30, w, 70);
+		JLabel lblUser = new JLabel("Tên Admin");
+		lblUser.setBounds(x, 10, w, 70);
 		menuBar.add(lblUser);
 		lblUser.setIcon(iconUser);
 
 		menuTrangChu = new JMenu("Trang Chủ");
 
-//				menuTrangChu.setHorizontalTextPosition(SwingConstants.CENTER);
-//				menuTrangChu.setVerticalTextPosition(SwingConstants.BOTTOM);
-		menuTrangChu.setBounds(x, 140, w, h);
-//				menuBar.add(menuTrangChu);
+//		menuTrangChu.setHorizontalTextPosition(SwingConstants.CENTER);
+//		menuTrangChu.setVerticalTextPosition(SwingConstants.BOTTOM);
+		menuTrangChu.setBounds(x, 100, w, h);
+//		menuBar.add(menuTrangChu);
 		itemTrangChu = new JMenuItem("Trang chủ");
 		menuTrangChu.add(itemTrangChu);
 		menuBar.add(menuTrangChu);
 
-//		            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
-//		            bar.add(sep1, "growy");
+//            JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
+//            bar.add(sep1, "growy");
 		menuDatPhong = new JMenu("Đặt phòng");
-//				menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
-//				menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
-//				menuBar.add(menuDatPhong);
-		menuDatPhong.setBounds(x, 200, w, h);
+//		menuDatPhong.setHorizontalTextPosition(SwingConstants.CENTER);
+//		menuDatPhong.setVerticalTextPosition(SwingConstants.BOTTOM);
+//		menuBar.add(menuDatPhong);
+		menuDatPhong.setBounds(x, 160, w, h);
 		itemDatPhong = new JMenuItem("Đặt phòng");
 		menuDatPhong.add(itemDatPhong);
 		menuBar.add(menuDatPhong);
 
 		menuQuanLyHoaDon = new JMenu("Quản Lý Hóa Đơn");
-//				menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
-//				menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
-//				menuBar.add(menuQuanLyHoaDon);
-		menuQuanLyHoaDon.setBounds(x, 260, w, h);
+//		menuQuanLyHoaDon.setHorizontalTextPosition(SwingConstants.CENTER);
+//		menuQuanLyHoaDon.setVerticalTextPosition(SwingConstants.BOTTOM);
+//		menuBar.add(menuQuanLyHoaDon);
+		menuQuanLyHoaDon.setBounds(x, 220, w, h);
 		itemQuanLyHoaDon = new JMenuItem("Quản lý hóa đơn dịch vụ");
 		menuQuanLyHoaDon.add(itemQuanLyHoaDon);
 		menuBar.add(menuQuanLyHoaDon);
 
 		menuQuanLyDichVu = new JMenu("Quản Lý Dịch Vụ");
-//				menuQuanLyDichVu.setHorizontalTextPosition(SwingConstants.CENTER);
-//				menuQuanLyDichVu.setVerticalTextPosition(SwingConstants.BOTTOM);
-//				menuBar.add(menuQuanLyDichVu);
-		menuQuanLyDichVu.setBounds(x, 320, w, h);
+//		menuQuanLyDichVu.setHorizontalTextPosition(SwingConstants.CENTER);
+//		menuQuanLyDichVu.setVerticalTextPosition(SwingConstants.BOTTOM);
+//		menuBar.add(menuQuanLyDichVu);
+		menuQuanLyDichVu.setBounds(x, 280, w, h);
 		itemQuanLyPhong = new JMenuItem("Quản lý phòng");
 		itemQuanLyDichVu = new JMenuItem("Quản lý dịch vụ");
 		menuQuanLyDichVu.add(itemQuanLyPhong);
 		menuQuanLyDichVu.add(itemQuanLyDichVu);
 		menuBar.add(menuQuanLyDichVu);
 
-//		            JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
-//		            bar.add(sep2, "growy");
+//            JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
+//            bar.add(sep2, "growy");
 
 		menuQuanLyKhachHang = new JMenu("Quản Lý Khách Hàng");
-//				menuQuanLyKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
-//				menuQuanLyKhachHang.setVerticalTextPosition(SwingConstants.BOTTOM);
-//				menuBar.add(menuQuanLyKhachHang);
-		menuQuanLyKhachHang.setBounds(x, 380, w, h);
+//		menuQuanLyKhachHang.setHorizontalTextPosition(SwingConstants.CENTER);
+//		menuQuanLyKhachHang.setVerticalTextPosition(SwingConstants.BOTTOM);
+//		menuBar.add(menuQuanLyKhachHang);
+		menuQuanLyKhachHang.setBounds(x, 340, w, h);
 		itemQuanLyKhachHang = new JMenuItem("Quản lý khách hàng");
 		menuQuanLyKhachHang.add(itemQuanLyKhachHang);
 		menuBar.add(menuQuanLyKhachHang);
 
-//				menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
-////				menuQuanLyNhanVien.setHorizontalTextPosition(SwingConstants.CENTER);
-////				menuQuanLyNhanVien.setVerticalTextPosition(SwingConstants.BOTTOM);
-////				menuBar.add(menuQuanLyNhanVien);
-//				menuQuanLyNhanVien.setBounds(x, 400, w, h);
-//				itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
-//				menuQuanLyNhanVien.add(itemQuanLyNhanVien);
-//				menuBar.add(menuQuanLyNhanVien);
+		menuQuanLyNhanVien = new JMenu("Quản Lý Nhân Viên");
+//		menuQuanLyNhanVien.setHorizontalTextPosition(SwingConstants.CENTER);
+//		menuQuanLyNhanVien.setVerticalTextPosition(SwingConstants.BOTTOM);
+//		menuBar.add(menuQuanLyNhanVien);
+		menuQuanLyNhanVien.setBounds(x, 400, w, h);
+		itemQuanLyNhanVien = new JMenuItem("Quản lý nhân viên");
+		menuQuanLyNhanVien.add(itemQuanLyNhanVien);
+		menuBar.add(menuQuanLyNhanVien);
 
 		JMenu menuThongKe = new JMenu("Thống kê");
-//				menuThongKe.setHorizontalTextPosition(SwingConstants.CENTER);
-//				menuThongKe.setVerticalTextPosition(SwingConstants.BOTTOM);
-//				menuBar.add(menuThongKe);
-		menuThongKe.setBounds(x, 440, w, h);
+//		menuThongKe.setHorizontalTextPosition(SwingConstants.CENTER);
+//		menuThongKe.setVerticalTextPosition(SwingConstants.BOTTOM);
+//		menuBar.add(menuThongKe);
+		menuThongKe.setBounds(x, 460, w, h);
 		itemThongKeDichVu = new JMenuItem("Thống kê dịch vụ");
 		itemThongKeKhachHang = new JMenuItem("Thống kê khách hàng");
+		itemThongKeNhanVien = new JMenuItem("Thống kê nhân viên");
 
 		menuThongKe.add(itemThongKeDichVu);
 		menuThongKe.add(itemThongKeKhachHang);
+		menuThongKe.add(itemThongKeNhanVien);
 		menuBar.add(menuThongKe);
 
 		btnLogout = new JButton("Log out");
@@ -226,7 +239,7 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 		pnlFull.add(menuBar);
 
 		// Phần Right
-		JLabel lblTitle = new JLabel("Quản Lý Đặt Hàng");
+		JLabel lblTitle = new JLabel("Quản Lý Đặt Phòng");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setBounds(350, 0, 500, 30);
 		lblTitle.setFont(new Font("Ariel", Font.BOLD, 25));
@@ -245,19 +258,20 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 
 		cboMaKhachHang = new JComboBox<String>();
 		cboMaKhachHang.setEditable(false);
-		cboMaKhachHang.setBounds(125, 25, 195, 25);
+		cboMaKhachHang.setBounds(125, 25, 145, 25);
+		cboMaKhachHang.addItem("");
 		pnlThongTin.add(cboMaKhachHang);
 
 		lblTenKhachHang = new JLabel("Tên khách hàng:");
 		lblTenKhachHang.setBounds(7, 55, 100, 20);
 		pnlThongTin.add(lblTenKhachHang);
 
-		txtTenKhachHang = new JTextField();
-		txtTenKhachHang.setBounds(125, 55, 195, 25);
-		pnlThongTin.add(txtTenKhachHang);
-		txtTenKhachHang.setColumns(10);
+		txtTenKhachHang1 = new JTextField();
+		txtTenKhachHang1.setBounds(125, 55, 195, 25);
+		pnlThongTin.add(txtTenKhachHang1);
+		txtTenKhachHang1.setColumns(10);
 
-		lblTenKhachHang = new JLabel("Cmnd:");
+		lblTenKhachHang = new JLabel("CCCD:");
 		lblTenKhachHang.setBounds(10, 85, 100, 30);
 		pnlThongTin.add(lblTenKhachHang);
 
@@ -266,10 +280,10 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 		pnlThongTin.add(txtCCCD);
 		txtCCCD.setColumns(10);
 
-		txtCCCD = new JTextField();
-		txtCCCD.setBounds(490, 25, 250, 25);
-		pnlThongTin.add(txtCCCD);
-		txtCCCD.setColumns(10);
+//		txtCCCD = new JTextField();
+//		txtCCCD.setBounds(490, 25, 250, 25);
+//		pnlThongTin.add(txtCCCD);
+//		txtCCCD.setColumns(10);
 
 		lblNgayHetHanCCCD = new JLabel("Ngày hết hạn CCCD: ");
 		lblNgayHetHanCCCD.setBounds(7, 110, 250, 30);
@@ -279,12 +293,13 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 		dpNgayHetHanCCCD.setBounds(125, 115, 200, 25);
 		pnlThongTin.add(dpNgayHetHanCCCD);
 
-		lblTenKhachHang = new JLabel("Loại khách hàng:");
+		lblTenKhachHang = new JLabel("Quốc tịch:");
 		lblTenKhachHang.setBounds(7, 140, 100, 20);
 		pnlThongTin.add(lblTenKhachHang);
 
 		jcbLoaiKH = new JComboBox<String>();
 		jcbLoaiKH.setBounds(125, 140, 195, 25);
+		jcbLoaiKH.setEnabled(false);
 		pnlThongTin.add(jcbLoaiKH);
 
 		lblTenKhachHang = new JLabel("Mã phòng:");
@@ -299,23 +314,28 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 		lblNgayHetHanCCCD.setBounds(7, 195, 250, 30);
 		pnlThongTin.add(lblNgayHetHanCCCD);
 
-		dpNgayHetHanCCCD = new DatePicker(205);
-		dpNgayHetHanCCCD.setBounds(125, 200, 200, 25);
-		pnlThongTin.add(dpNgayHetHanCCCD);
+		dpTuNgay = new DatePicker(205);
+		dpTuNgay.setBounds(125, 200, 200, 25);
+		pnlThongTin.add(dpTuNgay);
 
 		lblNgayHetHanCCCD = new JLabel("Ngày đến: ");
 		lblNgayHetHanCCCD.setBounds(7, 220, 250, 30);
 		pnlThongTin.add(lblNgayHetHanCCCD);
 
-		dpNgayHetHanCCCD = new DatePicker(205);
-		dpNgayHetHanCCCD.setBounds(125, 225, 200, 25);
-		pnlThongTin.add(dpNgayHetHanCCCD);
+		dpDenNgay = new DatePicker(205);
+		dpDenNgay.setBounds(125, 225, 200, 25);
+		pnlThongTin.add(dpDenNgay);
 
 		jckKH1st = new JCheckBox("Khách hàng mới");
-		jckKH1st.setBounds(100, 255, 250, 30);
+		jckKH1st.setBounds(100, 10000, 250, 30);
 		pnlThongTin.add(jckKH1st);
 
 		// Thêm Button
+
+		btnAdd = new JButton("+");
+		btnAdd.setBounds(274, 25, 45, 25);
+		pnlThongTin.add(btnAdd);
+
 		btnThem = new JButton("Add");
 		btnThem.setBounds(40, 300, 100, 30);
 		btnThem.setIcon(iconThem);
@@ -361,8 +381,8 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 		pnlDanhSachHoaDon.setLayout(null);
 
 		JScrollPane scrollHD;
-		String[] headersHD = { "Mã hóa đơn", "Mã khách hàng", "tên khách hàng", "Mã phòng", "Loại phòng", "Ngày đến",
-				"Ngày đi", "Tình trạng" };
+		String[] headersHD = { "Mã hóa đơn", "Mã khách hàng", "tên khách hàng", "Mã phòng", "Ngày đến", "Ngày đi",
+				"Tình trạng" };
 
 		tableModelHD = new DefaultTableModel(headersHD, 0);
 
@@ -409,8 +429,21 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 
 		docDuLieuVaoTable();
 		docDSPhong();
-
+		loadCBMaPhong();
+		loadCBKhachHang();
+		loadCboMaKH();
+		table.addMouseListener(this);
+		tableHD.addMouseListener(this);
 		jckKH1st.addActionListener(this);
+
+		// Add sự kiện comboBox
+		cboMaKhachHang.addActionListener(this);
+		// add sự kiện button
+		btnThem.addActionListener(this);
+		btnLamMoi.addActionListener(this);
+		btnLogout.addActionListener(this);
+		btnTim.addActionListener(this);
+		jcbLoc.addActionListener(this);
 
 		// add sự kiện cho menu
 		itemDatPhong.addActionListener(this);
@@ -422,11 +455,34 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 		itemThongKeKhachHang.addActionListener(this);
 		itemTrangChu.addActionListener(this);
 		btnLogout.addActionListener(this);
+
+		btnAdd.addActionListener(this);
+
 	}
 
 	public static void main(String[] args) {
 		new GUI_DatPhong().setVisible(true);
 
+	}
+
+	private void loadCboMaKH() {
+		listKH = kh_dao.getalltbKhachHang();
+		for (KhachHang kh : listKH) {
+			String ma = kh.getMaKhachHang();
+			cboMaKhachHang.addItem(String.valueOf(ma));
+		}
+	}
+
+	private void loadCBMaPhong() {
+		listPhong = phong_dao.getallPhong();
+		for (Phong p : listPhong)
+			jcbMaPhong.addItem(p.getMaPhong());
+	}
+
+	private void loadCBKhachHang() {
+		listKH = kh_dao.getalltbKhachHang();
+		for (KhachHang kh : listKH)
+			jcbLoaiKH.addItem(kh.getQuocTich());
 	}
 
 	public void docDuLieuVaoTable() {
@@ -458,8 +514,12 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 				}
 
 			}
+			if (hdp.getTinhTrang() == 0)
+				tinhTrang = "Đã nhận phòng";
+			else if (hdp.getTinhTrang() == 1)
+				tinhTrang = "Đã thanh toán";
 			tableModelHD.addRow(new Object[] { hdp.getMaHoaDon(), hdp.getKhachHang().getMaKhachHang(), tenKH,
-					hdp.getPhong().getMaPhong(), tenLPhong, date1, date2, hdp.getTinhTrang() });
+					hdp.getPhong().getMaPhong(), date1, date2, tinhTrang });
 
 		}
 	}
@@ -482,6 +542,7 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 					dongia = i.getDonGia();
 					break;
 				}
+
 			}
 			tableModel.addRow(new Object[] { p.getMaPhong(), tenLPhong, p.getViTri(), dongia });
 
@@ -559,20 +620,100 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 
 			Date tuNgay = new Date(ml);
 			Date denNgay = new Date(ml);
-//			try {
-//                tuNgay = tuNgay.getFullDate();
-//                denNgay = dpTuNgay.getFullDate(); 
-//            } catch (ParseException e1) {
-//                // TODO Auto-generated catch block
-//                e1.printStackTrace();
-//            }
+			try {
+				tuNgay = dpTuNgay.getFullDate();
+				denNgay = dpDenNgay.getFullDate();
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			if (!tuNgay.toString().equals(now.toString()) && tuNgay.before(now)) {
+				JOptionPane.showMessageDialog(this, "Ngày đến không được trước ngày hiện tại");
+				return;
+			}
+			if (!tuNgay.toString().equals(denNgay.toString()) && !denNgay.before(tuNgay)) {
+				JOptionPane.showMessageDialog(this, "Ngày đi không được trước ngày đến");
+				return;
+			}
+			KhachHang khachHang = null;
+			if (jckKH1st.isSelected()) {
+				String tenKH = txtTenKhachHang.getText();
+				String cccd = txtCCCD.getText();
+				String loaiKH = (String) jcbLoaiKH.getSelectedItem();
+				int soLanDatPhong = 0;
+				khachHang = new KhachHang("", tenKH, loaiKH, cccd, ngayHetHan);
+				try {
+					if (kh_dao.insert(khachHang)) {
+						JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công");
+					}
+				} catch (SQLException e2) {
+					JOptionPane.showMessageDialog(this, "Không thể thêm khách hàng");
+				}
+
+				khachHang.setMaKhachHang(kh_dao.getLatestID());
+			} else {
+				khachHang = listKH.get(cboMaKhachHang.getSelectedIndex() - 1);
+			}
+			Phong phong = listPhong.get(jcbMaPhong.getSelectedIndex());
+			int tinhTrang = 0;
+			HoaDonPhong hdp = new HoaDonPhong(tinhTrang, tuNgay, denNgay, phong, khachHang);
+			if (hdp_dao.themHDP(hdp)) {
+				JOptionPane.showMessageDialog(this, "Đặt phòng thành công!");
+				hdp.setMaHoaDon(hdp_dao.getLatestID());
+				// dshdp.add(hdp);
+				// maHD = hdp.getMaHD();
+//                cboTinhTrang.setSelectedIndex(0);
+
+				tableModelHD.addRow(new Object[] { hdp.getMaHoaDon(), hdp.getKhachHang().getMaKhachHang(),
+						hdp.getKhachHang().getTenKhachHang(), phong.getMaPhong(), tuNgay, denNgay, "Đã đặt phòng" });
+			} else {
+				JOptionPane.showMessageDialog(this, "Không thể đặt phòng do trùng giờ đặt");
+			}
+		} else if (o.equals(cboMaKhachHang)) {
+			int index = cboMaKhachHang.getSelectedIndex() - 1;
+			if (index == -1) {
+				txtTenKhachHang1.setText("");
+				txtCCCD.setText("");
+				dpNgayHetHanCCCD.setValue(now);
+				jcbLoaiKH.setSelectedIndex(0);
+			} else {
+				txtTenKhachHang1.setText(listKH.get(index).getTenKhachHang());
+//				String cc = String.valueOf(listKH.get(index).getCCCD());
+				txtCCCD.setText(listKH.get(index).getCCCD());
+				txtCCCD.setEditable(false);
+				dpNgayHetHanCCCD.setValue(listKH.get(index).getNgayHetHanCCCD());
+				jcbLoaiKH.setSelectedItem(listKH.get(index).getQuocTich());
+
+			}
+		} else if (o.equals(btnLamMoi)) {
+			cboMaKhachHang.setSelectedIndex(0);
+			txtTenKhachHang1.setText("");
+			txtCCCD.setText("");
+			dpNgayHetHanCCCD.setValue(now);
+			jcbMaPhong.setSelectedIndex(0);
+			dpTuNgay.setValue(now);
+			dpDenNgay.setValue(now);
+		} else if (o.equals(btnTim)) {
+			dshdp = hdp_dao.getalltbHoaDonPhong();
+			try {
+				int MaHD = Integer.parseInt(txtTenKhachHang.getText());
+				tableHD.clearSelection();
+				for (int i = 0; i < dshdp.size(); i++) {
+					if (MaHD == dshdp.get(i).getMaHoaDon()) {
+						tableHD.addRowSelectionInterval(i, i);
+						return;
+					}
+				}
+			} catch (Exception e1) {
+				JOptionPane.showMessageDialog(this, "Mã hóa đơn phải là số");
+			}
 		}
-		// Menu
-//		else if (o.equals(itemDatPhong)) {
+		
+		
+//		if (o.equals(itemDatPhong)) {
 //			this.dispose();
 //			new GUI_DatPhong().setVisible(true);
-//		} 
-		else if (o.equals(itemQuanLyDichVu)) {
+//		} else 
+		if (o.equals(itemQuanLyDichVu)) {
 			this.dispose();
 			new GUI_QuanLyDichVu().setVisible(true);
 		} else if (o.equals(itemQuanLyHoaDon)) {
@@ -600,7 +741,51 @@ public class GUI_DatPhong extends JFrame implements ActionListener {
 				this.dispose();
 				new GUI_DangNhap().setVisible(true);
 			}
-
+		} else if (o.equals(btnAdd)) {
+			this.dispose();
+			new GUI_QuanLyKhachHang().setVisible(true);
 		}
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Object o = e.getSource();
+		if (o.equals(tableHD)) {
+			int row2 = tableHD.getSelectedRow();
+			cboMaKhachHang.setSelectedItem(tableModelHD.getValueAt(row2, 1).toString());
+			txtTenKhachHang.setText(tableModelHD.getValueAt(row2, 0).toString());
+			txtTenKhachHang1.setText(tableModelHD.getValueAt(row2, 2).toString());
+			jcbMaPhong.setSelectedItem(tableModelHD.getValueAt(row2, 3).toString());
+			// dpTuNgay.setValue(tableHD.getValueAt(row2, 4));
+
+		}
+
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

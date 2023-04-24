@@ -87,15 +87,13 @@ public class HoaDonPhong_DAO {
 		PreparedStatement stmt = null;
 		int n = 0;
 		try {
-			String sql = "insert into dbo.HoaDonPhong (MaHD,MaKH,MaPhong,TinhTrang, NgayGioNhan,NgayGioTra)"
-					+ " values (?,?,?,?,?,?)";
+			String sql = "insert into HoaDonPhong values(?, ?, ?, ?, ?)";
 			stmt = con.prepareStatement(sql);
-			stmt.setInt(1, hdp.getMaHoaDon());
-			stmt.setString(2, hdp.getKhachHang().getMaKhachHang());
-			stmt.setString(3, hdp.getPhong().getMaPhong());
-			stmt.setInt(4, hdp.getTinhTrang());
-			stmt.setDate(5, hdp.getNgayGioNhan());
-			stmt.setDate(6, hdp.getNgayGioTra());
+			stmt.setString(1, hdp.getKhachHang().getMaKhachHang());
+			stmt.setString(2, hdp.getPhong().getMaPhong());
+			stmt.setInt(3, hdp.getTinhTrang());
+			stmt.setDate(4, hdp.getNgayGioNhan());
+			stmt.setDate(5, hdp.getNgayGioTra());
 			n = stmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -159,4 +157,28 @@ public class HoaDonPhong_DAO {
 		}
 		return n > 0;
 	}
+	
+	public int getLatestID() {
+        int id = 0;
+        ConnectDB.getInstance();
+        Statement stmt = null;
+        try {
+            Connection con = ConnectDB.getConnection();
+            String sql = "SELECT * FROM dbo.HoaDonPhong";
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            ResultSet rs = stmt.executeQuery(sql);
+            rs.last();
+            id = rs.getInt("MaHD");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return id;
+    }
 }

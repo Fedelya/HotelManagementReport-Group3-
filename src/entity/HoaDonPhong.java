@@ -17,6 +17,17 @@ public class HoaDonPhong {
 		super();
 		this.maHoaDon = maHoaDon;
 	}
+	
+	
+	
+	public HoaDonPhong(int tinhTrang, Date ngayGioNhan, Date ngayGioTra, Phong phong, KhachHang khachHang) {
+		super();
+		this.tinhTrang = tinhTrang;
+		this.ngayGioNhan = ngayGioNhan;
+		this.ngayGioTra = ngayGioTra;
+		this.phong = phong;
+		this.khachHang = khachHang;
+	}
 	public HoaDonPhong(int maHoaDon, int tinhTrang, Date ngayGioNhan, Date ngayGioTra, Phong phong,
 			KhachHang khachHang) {
 		super();
