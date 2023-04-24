@@ -19,9 +19,7 @@ public class ChiTietDichVu {
 	public ChiTietDichVu() {
 		super();
 	}
-
 	public ChiTietDichVu(DichVu dichVu, HoaDonDichVu hoaDonDichVu, int soLuong, Date ngayGioDat) {
-		super();
 		this.dichVu = dichVu;
 		this.hoaDonDichVu = hoaDonDichVu;
 		setSoLuong(soLuong);
@@ -29,14 +27,12 @@ public class ChiTietDichVu {
 	}
 
 	public ChiTietDichVu(DichVu dichVu, HoaDonDichVu hoaDonDichVu, int soLuong) {
-		super();
 		this.dichVu = dichVu;
 		this.hoaDonDichVu = hoaDonDichVu;
 		this.soLuong = soLuong;
 	}
 
 	public ChiTietDichVu(DichVu dichVu, int soLuong) {
-		super();
 		this.dichVu = dichVu;
 		this.soLuong = soLuong;
 	}

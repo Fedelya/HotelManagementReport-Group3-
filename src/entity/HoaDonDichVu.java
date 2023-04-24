@@ -1,13 +1,17 @@
 package entity;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Objects;
+
+import dao.ChiTietDichVu_DAO;
 
 public class HoaDonDichVu {
 	private int maHoaDonDichVu;
 	private int tinhTrang;
 	private Date ngayGioDat;
 	private KhachHang khachHang;
+	private ChiTietDichVu_DAO ctdv_dao;
 
 	public HoaDonDichVu() {
 		super();
@@ -16,6 +20,12 @@ public class HoaDonDichVu {
 	public HoaDonDichVu(int maHoaDonDichVu) {
 		super();
 		this.maHoaDonDichVu = maHoaDonDichVu;
+	}
+	
+	public HoaDonDichVu(int maHoaDonDichVu, Date ngayGioDat, KhachHang khachHang) {
+		this.maHoaDonDichVu = maHoaDonDichVu;
+		this.ngayGioDat = ngayGioDat;
+		this.khachHang = khachHang;
 	}
 
 	public HoaDonDichVu(int maHoaDonDichVu, int tinhTrang, Date ngayGioDat, KhachHang khachHang) {
@@ -85,5 +95,17 @@ public class HoaDonDichVu {
 		return "HoaDonDichVu [maHoaDonDichVu=" + maHoaDonDichVu + ", tinhTrang=" + tinhTrang + ", ngayGioDat="
 				+ ngayGioDat + ", khachHang=" + khachHang + "]";
 	}
-
+	public ArrayList<ChiTietDichVu> getCTDV(){
+		ctdv_dao = new ChiTietDichVu_DAO();
+		return ctdv_dao.getChiTietDVByMaHDDV(this.maHoaDonDichVu);
+	}
+	public double tinhTong() {
+		ArrayList<ChiTietDichVu> listCTDV = getCTDV();
+		double tong =0;
+		for(int i=0;i<listCTDV.size();i++) {
+			DichVu dv = listCTDV.get(i).getDichVu();
+			tong += dv.getDonGia()*listCTDV.get(i).getSoLuong();
+		}
+		return tong;
+	}
 }

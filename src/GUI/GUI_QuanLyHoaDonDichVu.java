@@ -49,12 +49,15 @@ import dao.DichVu_DAO;
 import dao.HoaDonDichVu_DAO;
 import dao.KhachHang_DAO;
 import entity.ChiTietDichVu;
+import entity.ChiTietDichVu;
 import entity.DichVu;
+import entity.HoaDonDichVu;
+import entity.HoaDonDichVu;
 import entity.HoaDonDichVu;
 import entity.KhachHang;
 
 public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, MouseListener {
-	private JButton btnLogout, btnThem, btnXoa, btnSua, btnLamMoi, btnTim, btnXemTatCa;
+	private JButton btnLogout, btnThem, btnXoa, btnSua, btnTaoHoaDon, btnTim, btnXemTatCa;
 	private JMenuItem itemTrangChu;
 	private JMenu menuTrangChu, menuDatPhong, menuQuanLyHoaDon, menuQuanLyDichVu, menuQuanLyKhachHang,
 			menuQuanLyNhanVien, menuThongKe, subMenu;
@@ -109,10 +112,14 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 	private ArrayList<ChiTietDichVu> dsCTDV;
 	private ArrayList<KhachHang> dsKH;
 	private ArrayList<DichVu> dsDV;
+	private ArrayList<HoaDonDichVu> listHDDV;
+
 	private HoaDonDichVu_DAO HDDV_dao;
 	private ChiTietDichVu_DAO ctDV_dao;
 	private KhachHang_DAO kh_dao;
 	private DichVu_DAO dv_dao;
+	private HoaDonDichVu_DAO hddv_dao;
+
 	private JTextField txtMaHDDV;
 
 	public GUI_QuanLyHoaDonDichVu() {
@@ -120,6 +127,9 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 		dsKH = new ArrayList<KhachHang>();
 		dsCTDV = new ArrayList<ChiTietDichVu>();
 		dsDV = new ArrayList<DichVu>();
+		listHDDV = new ArrayList<HoaDonDichVu>();
+
+		hddv_dao = new HoaDonDichVu_DAO();
 		ctDV_dao = new ChiTietDichVu_DAO();
 		kh_dao = new KhachHang_DAO();
 		dv_dao = new DichVu_DAO();
@@ -247,8 +257,8 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 
 		cboMaKhachHang = new JComboBox<String>();
 		cboMaKhachHang.setEditable(false);
+		cboMaKhachHang.addItem("");
 		cboMaKhachHang.setBounds(145, 25, 195, 25);
-//		cboMaKhachHang.addItem("");
 		pnlThongTin.add(cboMaKhachHang);
 
 		lblTenKhachHang = new JLabel("Tên khách hàng:");
@@ -283,6 +293,7 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 		pnlThongTin.add(lblTenKhachHang);
 
 		txtGia = new JTextField();
+		txtGia.setEditable(false);
 		txtGia.setBounds(565, 70, 160, 25);
 		pnlThongTin.add(txtGia);
 
@@ -292,10 +303,10 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 		btnThem.setIcon(iconThem);
 		pnlThongTin.add(btnThem);
 
-		btnLamMoi = new JButton("Refesh");
-		btnLamMoi.setBounds(400, 120, 200, 30);
-		btnLamMoi.setIcon(iconLamMoi);
-		pnlThongTin.add(btnLamMoi);
+		btnTaoHoaDon = new JButton("Tạo hóa đơn");
+		btnTaoHoaDon.setBounds(400, 120, 200, 30);
+		btnTaoHoaDon.setIcon(iconLamMoi);
+		pnlThongTin.add(btnTaoHoaDon);
 //
 //		btnXoa = new JButton("Delete");
 //		btnXoa.setBounds(260, 150, 100, 30);
@@ -350,12 +361,12 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 		txtMaHDDV.setColumns(10);
 		pnlDanhSachHoaDon.add(txtMaHDDV);
 
-		btnTim = new JButton("Search");
+		btnTim = new JButton("Tìm");
 		btnTim.setBounds(350, 22, 110, 30);
 		btnTim.setIcon(iconTim);
 		pnlDanhSachHoaDon.add(btnTim);
 
-		btnXemTatCa = new JButton("See All");
+		btnXemTatCa = new JButton("Xem tất cả");
 		btnXemTatCa.setBounds(480, 22, 110, 30);
 		btnXemTatCa.setIcon(iconXemTatCa);
 		pnlDanhSachHoaDon.add(btnXemTatCa);
@@ -395,7 +406,16 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 		itemThongKeDichVu.addActionListener(this);
 		itemThongKeKhachHang.addActionListener(this);
 		itemTrangChu.addActionListener(this);
+		
 		btnLogout.addActionListener(this);
+		btnThem.addActionListener(this);
+		btnTaoHoaDon.addActionListener(this);
+		btnBoChon.addActionListener(this);
+		btnTim.addActionListener(this);
+		btnXemTatCa.addActionListener(this);
+
+		jcbDichVu.addActionListener(this);
+
 	}
 
 	public static void main(String[] args) {
@@ -409,37 +429,200 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 			String date = formatDate(i.getNgayGioDat());
 			tableModel.addRow(new Object[] { i.getDichVu().getMaDichVu(), i.getDichVu().getTenDichVu(), i.getSoLuong(),
 					i.getDichVu().getDonGia(), date, i.getHoaDonDichVu().getMaHoaDonDichVu() });
-			break;
 		}
 	}
 
 	public void docDuLieuVaoTableHDDV() {
-		List<HoaDonDichVu> list = HDDV_dao.getalltbHoaDonDichVu();
-		for (HoaDonDichVu hddv : list) {
+		listHDDV = hddv_dao.getalltbHoaDonDichVu();
+		for (HoaDonDichVu hddv : listHDDV) {
 			String date = formatDate(hddv.getNgayGioDat());
+			String tinhTrang = getTinhTrang(hddv.getTinhTrang());
+			double tong = hddv.tinhTong();
 			tableModelHD.addRow(new Object[] { hddv.getMaHoaDonDichVu(), hddv.getKhachHang().getMaKhachHang(), date,
-					hddv.getMaHoaDonDichVu(), hddv.getTinhTrang() });
+					tong, tinhTrang });
 		}
+	}
+
+	private String getTinhTrang(int tinhTrang) {
+		String s = "";
+		if (tinhTrang == 0) {
+			s = "Chưa thanh toán";
+		} else if (tinhTrang == 1) {
+			s = "Đã thanh toán";
+		}
+		return s;
 	}
 
 	private String formatDate(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy");
 		return sdf.format(date);
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-//		if (o.equals(btnThem)) {
-//			
-//		}
+		long millis = System.currentTimeMillis();
+		Date date = new Date(millis);
+		
+		if (o.equals(btnThem)) {
+			int index = tableHD.getSelectedRow();
+			if (index == -1) {
+				if (validDataSo()) {
+					ChiTietDichVu ctdv = null;
+					ctdv = getThongTinDV();
+					try {
+						boolean result = ctDV_dao.insertCTDV(ctdv);
+						if (result) {
+							int maDV = 0;
+							String tenDV = ctdv.getDichVu().getTenDichVu();
+							for (DichVu item : dsDV) {
+								if (item.getTenDichVu().equals(tenDV)) {
+									maDV = item.getMaDichVu();
+									break;
+								}
+							}
+							for (ChiTietDichVu chiTietDichVu : ctDV_dao.getallChiTietDichVu()) {
+								tableModel.addRow(new Object[] { maDV, tenDV, chiTietDichVu.getSoLuong(),
+										chiTietDichVu.getDichVu().getDonGia(), date, chiTietDichVu.getHoaDonDichVu().getMaHoaDonDichVu()});
+							}
+							JOptionPane.showMessageDialog(this, "Đã thêm dịch vụ");
+						}
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(this, "Lỗi! Thêm thất bại");
+					}
+				}
+			} else {
+				if (validDataSo()) {
+					HoaDonDichVu hdDV = null;
+					hdDV = getThongTinHDDV();
+
+					int maHDDV = listHDDV.get(index).getMaHoaDonDichVu();
+					hdDV.setMaHoaDonDichVu(index);
+
+					ChiTietDichVu ctdv = null;
+					ctdv = getThongTinDV();
+					ctdv.setHoaDonDichVu(hdDV);
+					try {
+						if (ctDV_dao.insertCTDV(ctdv)) {
+						int maDV = 0;
+						String tenDV = ctdv.getDichVu().getTenDichVu();
+						for (DichVu item : dsDV) {
+							if (item.getTenDichVu().equals(tenDV)) {
+								maDV = item.getMaDichVu();
+								break;
+							}
+						}
+						tableModel.addRow(new Object[] { maDV, tenDV, ctdv.getSoLuong(), ctdv.getDichVu().getDonGia(),
+								date, maHDDV });
+						ctDV_dao.updateMaHDDV(maHDDV);
+						JOptionPane.showMessageDialog(this, "Đã thêm dịch vụ");
+						}
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(this, "Lỗi! Thêm thất bại");
+					}
+				}
+			}
+			cboMaKhachHang.setEnabled(false);
+
+		}
+		if (o.equals(btnBoChon)) {
+			int index = tableHD.getSelectedRow();
+			tableHD.removeRowSelectionInterval(index, index);
+			tableModel.getDataVector().removeAllElements();
+			tableModel.fireTableDataChanged();
+			cboMaKhachHang.setEnabled(false);
+			cboMaKhachHang.setSelectedIndex(0);
+			jcbDichVu.setSelectedIndex(0);
+			txtSoLuong.setText("");
+		}
+		if (o.equals(btnTaoHoaDon)) {
+			int index = tableHD.getSelectedRow();
+			if (index == -1) {
+				HoaDonDichVu hddv = null;
+				hddv = getThongTinHDDV();
+				tableModel.getDataVector().removeAllElements();
+				tableModel.fireTableDataChanged();
+
+				try {
+					if (hddv_dao.insert(hddv)) {
+						hddv.setMaHoaDonDichVu(hddv_dao.getLatestID());
+						ctDV_dao.updateMaHDDV(hddv_dao.getLatestID());
+
+					}
+					String tinhTrang = getTinhTrang(hddv.getTinhTrang());
+					listHDDV.add(hddv);
+					tableModelHD.addRow(
+
+							new Object[] { hddv.getMaHoaDonDichVu(), hddv.getKhachHang().getMaKhachHang(),
+									hddv.getNgayGioDat(), hddv.tinhTong(), tinhTrang });
+					JOptionPane.showMessageDialog(this, "Đã thêm hoá đơn");
+
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(this, "Lỗi! Thêm thất bại");
+				}
+			} else {
+				HoaDonDichVu hddv = null;
+				hddv = getThongTinHDDV();
+				hddv.setMaHoaDonDichVu(listHDDV.get(index).getMaHoaDonDichVu());
+				try {
+					if (hddv_dao.insert(hddv)) {
+						hddv.setMaHoaDonDichVu(hddv_dao.getLatestID());
+						ctDV_dao.updateMaHDDV(hddv_dao.getLatestID());
+					}
+					String tt = getTinhTrang(hddv.getTinhTrang());
+					listHDDV.add(hddv);
+					tableModelHD.addRow(
+
+							new Object[] { hddv.getMaHoaDonDichVu(), hddv.getKhachHang().getMaKhachHang(),
+									hddv.getNgayGioDat(), hddv.tinhTong(), tt });
+					JOptionPane.showMessageDialog(this, "Đã thêm hoá đơn");
+
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(this, "Lỗi! Thêm thất bại");
+				}
+			}
+			tableModel.getDataVector().removeAllElements();
+			tableModel.fireTableDataChanged();
+			cboMaKhachHang.setEnabled(true);
+		}
+		if(o.equals(btnTim)) {			
+			int maHD = Integer.parseInt(txtMaHDDV.getText().trim());
+			tableModelHD.getDataVector().removeAllElements();
+			tableModelHD.fireTableDataChanged();
+			listHDDV = hddv_dao.getDSHDDVTheoMa(maHD);
+			if (listHDDV.size() <= 0) {
+				JOptionPane.showMessageDialog(this, "Không tìm thấy hoá đơn");
+			}
+			for (HoaDonDichVu hddv : listHDDV) {
+				String date2 = formatDate(hddv.getNgayGioDat());
+				String tinhTrang = getTinhTrang(hddv.getTinhTrang());
+				double tong = hddv.tinhTong();
+				tableModelHD.addRow(new Object[] { hddv.getMaHoaDonDichVu(), hddv.getKhachHang().getMaKhachHang(), date2,
+						tong, tinhTrang });
+			}
+		}
+		if(o.equals(btnXemTatCa)) {
+			tableModelHD.getDataVector().removeAllElements();
+			tableModelHD.fireTableDataChanged();
+			listHDDV = hddv_dao.getalltbHoaDonDichVu();
+			docDuLieuVaoTableHDDV();
+		}
 		if (o.equals(cboMaKhachHang)) {
-			int indx = cboMaKhachHang.getSelectedIndex();
+			int indx = cboMaKhachHang.getSelectedIndex() - 1;
 			if (indx == -1) {
 				txtTenKhachHang.setText("");
 			} else {
 				String ten = String.valueOf(dsKH.get(indx).getTenKhachHang());
 				txtTenKhachHang.setText(ten);
+			}
+		}
+		if (o.equals(jcbDichVu)) {
+			int indx = jcbDichVu.getSelectedIndex() - 1;
+			if (indx == -1) {
+				txtGia.setText("");
+			} else {
+				String gia = String.valueOf(dsDV.get(indx).getDonGia());
+				txtGia.setText(gia);
 			}
 		}
 		// Menu
@@ -475,6 +658,60 @@ public class GUI_QuanLyHoaDonDichVu extends JFrame implements ActionListener, Mo
 				new GUI_DangNhap().setVisible(true);
 			}
 		}
+	}
+
+	public HoaDonDichVu getThongTinHDDV() {
+		long millis = System.currentTimeMillis();
+		Date date = new Date(millis);
+		KhachHang khachHang = new KhachHang("", "", "", "", date);
+		String maKH = cboMaKhachHang.getSelectedItem().toString();
+		khachHang.setMaKhachHang(maKH);
+		int tt = 0;
+		HoaDonDichVu hd = new HoaDonDichVu(0, tt, date, khachHang);
+		hd.setMaHoaDonDichVu(hddv_dao.getLatestID());
+		return hd;
+	}
+
+	public ChiTietDichVu getThongTinDV() {
+
+		int indx = jcbDichVu.getSelectedIndex() - 1;
+
+		int maDV = dsDV.get(indx).getMaDichVu();
+		String tenDV = String.valueOf(jcbDichVu.getSelectedItem());
+		int soLuong = 0;
+		try {
+			soLuong = Integer.parseInt(txtSoLuong.getText());
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(this, "Số lượng phải là số");
+			return null;
+		}
+
+		double gia = dsDV.get(indx).getDonGia();
+		DichVu dv = new DichVu(maDV, tenDV, gia);
+		long millis = System.currentTimeMillis();
+		Date date = new Date(millis);
+
+		HoaDonDichVu hd = new HoaDonDichVu(0, date, null);
+
+		ChiTietDichVu ctDV = new ChiTietDichVu(dv, hd, soLuong, date);
+		return ctDV;
+	}
+
+	private boolean validDataSo() {
+		String soLuong = txtSoLuong.getText().trim();
+		if (soLuong.length() > 0) {
+			try {
+				int x = Integer.parseInt(soLuong);
+				if (x <= 0) {
+					JOptionPane.showMessageDialog(this, "Số lượng phải lớn hơn 0");
+					return false;
+				}
+			} catch (NumberFormatException e2) {
+				JOptionPane.showMessageDialog(this, "Số lượng phải là số!");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

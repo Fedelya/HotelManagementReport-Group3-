@@ -7,17 +7,17 @@ import java.util.Objects;
 public class DichVu {
 	private int maDichVu;
 	private String tenDichVu;
-
 	private double donGia;
+	
 	public DichVu() {
-		super();
+	
 	}
 	public DichVu(int maDichVu) {
-		super();
+		
 		this.maDichVu = maDichVu;
 	}
 	public DichVu(int maDichVu, String tenDichVu,  double donGia) {
-		super();
+		
 		setMaDichVu(maDichVu);
 		setTenDichVu(tenDichVu);
 		
@@ -81,5 +81,20 @@ public class DichVu {
 		return maDichVu == other.maDichVu && Objects.equals(tenDichVu, other.tenDichVu);
 	}
 	
+//	@Override
+//	public int hashCode() {
+//		return Objects.hash(maDichVu);
+//	}
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (obj == null)
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//		DichVu other = (DichVu) obj;
+//		return maDichVu == other.maDichVu;
+//	}
 	
 }

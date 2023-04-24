@@ -45,21 +45,27 @@ public class ChiTietDichVu_DAO {
 		return dsCTDV;
 		
 	}
-	public boolean insert(ChiTietDichVu ctdv) {
+	public boolean insertCTDV(ChiTietDichVu ctdv) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement statement = null;
 		int n = 0;
 		try {
-			String sql = "insert into dbo.ChiTietDichVu (MaHDDV, MaDV, SoLuong, NgayGioDat" + "values (?,?,?,?)";
+			String sql = "insert into dbo.ChiTietDichVu(MaDV, SoLuong,NgayGioDat)" + "values (?,?,?)";
 			statement = con.prepareStatement(sql);
-			statement.setInt(1, ctdv.getHoaDonDichVu().getMaHoaDonDichVu());
-			statement.setInt(2, ctdv.getDichVu().getMaDichVu());
-			statement.setInt(3, ctdv.getSoLuong());
-			statement.setDate(4, ctdv.getNgayGioDat());
+//			statement.setInt(1, ctdv.getHoaDonDichVu().getMaHoaDonDichVu());
+			statement.setInt(1, ctdv.getDichVu().getMaDichVu());
+			statement.setInt(2, ctdv.getSoLuong());
+			statement.setDate(3, ctdv.getNgayGioDat());
 			n = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return n > 0;
 	}
@@ -153,5 +159,25 @@ public class ChiTietDichVu_DAO {
 		}
 		return dataList;
 	}
-	
+	public boolean updateMaHDDV(int id) {
+        PreparedStatement stmt = null;
+        ConnectDB.getInstance();
+        Connection con = ConnectDB.getConnection();
+        int n = 0;
+        try {
+            String sql = "update dbo.ChiTietDichVu set MaHDDV = ? where MaHDDV is null";
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, id);
+            n = stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return n > 0;
+    }
 }
