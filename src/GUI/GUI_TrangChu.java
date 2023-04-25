@@ -299,7 +299,7 @@ public class GUI_TrangChu extends JFrame implements ActionListener {
 //			System.out.println(tenLP);
 			lblLoai.setFont(new Font(Font.DIALOG, Font.BOLD, 25));
 			lblLoai.setAlignmentX(Component.CENTER_ALIGNMENT);
-			lblLoai.setForeground(new Color(255, 3, 238));
+			lblLoai.setForeground(Color.BLACK);
 			btnPhong[i].add(lblMaPhong);
 			btnPhong[i].add(space(0, 5));
 			btnPhong[i].add(lblIcon);
@@ -361,14 +361,14 @@ public class GUI_TrangChu extends JFrame implements ActionListener {
 
 	}
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new GUI_TrangChu().setVisible(true);
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				new GUI_TrangChu().setVisible(true);
+//			}
+//		});
+//	}
 
 	public JLabel space(int w, int h) {
 		JLabel space = new JLabel("");

@@ -452,9 +452,9 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 
 	}
 
-	public static void main(String[] args) {
-		new GUI_QuanLyPhong().setVisible(true);
-	}
+//	public static void main(String[] args) {
+//		new GUI_QuanLyPhong().setVisible(true);
+//	}
 
 	public void loadDSLPhong() {
 		ArrayList<LoaiPhong> listPB = lp_Dao.getallLoaiPhong();
@@ -580,9 +580,15 @@ public class GUI_QuanLyPhong extends JFrame implements MouseListener, ActionList
 				LoaiPhong lp = revertLoaiPhong();
 
 				try {
-					lp_Dao.insert(lp);
-					tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
-					JOptionPane.showMessageDialog(this, "them thanh cong");
+					if(lp_Dao.insert(lp)) {
+						
+						tableModel.addRow(new Object[] { lp.getMaLoaiPhong(), lp.getTenLoaiPhong(), lp.getDonGia() });
+						JOptionPane.showMessageDialog(this, "them thanh cong");
+					}
+					
+					else {
+						JOptionPane.showMessageDialog(this, "Trung");
+					}
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(this, "Trùng");
 				}

@@ -431,14 +431,14 @@ public class GUI_QuanLyKhachHang extends JFrame implements ActionListener, Mouse
 		btnLogout.addActionListener(this);
 	}
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new GUI_QuanLyKhachHang().setVisible(true);
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				new GUI_QuanLyKhachHang().setVisible(true);
+//			}
+//		});
+//	}
 
 	private void loadListKhachHang() {
 		dsKH = kh_DAO.getalltbKhachHang();

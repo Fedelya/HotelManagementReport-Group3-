@@ -53,7 +53,7 @@ public class HoaDonDichVu_DAO {
 		PreparedStatement stmt = null;
 		int n = 0;
 		try {
-			String sql = "insert into dbo.HoaDonDichVu (TinhTrang,NgayGioDat,MaKH)" + " values (?, ?, ?)";
+			String sql = "insert into dbo.HoaDonDichVu (TinhTrang,NgayGioLap,MaKH)" + " values (?, ?, ?)";
 			stmt = con.prepareStatement(sql);
 //			stmt.setInt(1, hddv.getMaHoaDonDichVu());
 			stmt.setInt(1, hddv.getTinhTrang());
@@ -78,7 +78,7 @@ public class HoaDonDichVu_DAO {
 		PreparedStatement stmt = null;
 		int n = 0;
 		try {
-			String sql = "update dbo.HoaDonDichVu set TinhTrang=?, NgayGioDat=?,MaKH=?" + "where MaHDDV=?";
+			String sql = "update dbo.HoaDonDichVu set TinhTrang=?, NgayGioLap=?,MaKH=?" + "where MaHDDV=?";
 			stmt = con.prepareStatement(sql);
 			stmt.setInt(1, hddv.getMaHoaDonDichVu());
 			stmt.setInt(1, hddv.getMaHoaDonDichVu());

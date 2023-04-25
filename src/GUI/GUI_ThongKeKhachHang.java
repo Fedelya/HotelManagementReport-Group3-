@@ -286,9 +286,9 @@ public class GUI_ThongKeKhachHang extends JFrame implements ActionListener {
 		btnLogout.addActionListener(this);
 	}
 
-	public static void main(String[] args) {
-		new GUI_ThongKeKhachHang().setVisible(true);
-	}
+//	public static void main(String[] args) {
+//		new GUI_ThongKeKhachHang().setVisible(true);
+//	}
 
 	private void reSizeColumnTable() {
 		// table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

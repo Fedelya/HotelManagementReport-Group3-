@@ -227,11 +227,11 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener, ActionLis
 //        pnlThongTindichvu.add(txtsoluong);
 //        txtsoluong.setColumns(10);
 		lbldongia = new JLabel("Đơn Giá");
-		lbldongia.setBounds(150, 80, 100, 30);
+		lbldongia.setBounds(10, 80, 100, 30);
 		pnlThongTindichvu.add(lbldongia);
 
 		txtdongia = new JTextField();
-		txtdongia.setBounds(250, 85, 250, 25);
+		txtdongia.setBounds(110, 85, 250, 25);
 		pnlThongTindichvu.add(txtdongia);
 		txtdongia.setColumns(10);
 		// them button
@@ -312,9 +312,9 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener, ActionLis
 
 	}
 
-	public static void main(String[] args) {
-		new GUI_QuanLyDichVu().setVisible(true);
-	}
+//	public static void main(String[] args) {
+//		new GUI_QuanLyDichVu().setVisible(true);
+//	}
 
 	public void docDuLieuVaoTable() {
 		List<DichVu> list = dv_DAO.getalltbDichVu();
@@ -359,17 +359,27 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener, ActionLis
 			txtdongia.setText("");
 			txtTendichvus.setText("");
 		} else if (o.equals(btnThem)) {
-			int ma = Integer.parseInt(txtMadichvu.getText());
-			String ten = txtTendichvu.getText();
-			double donGia = Double.parseDouble(txtdongia.getText());
-			DichVu dv = new DichVu(ma, ten, donGia);
+			String ma = txtMadichvu.getText();
+			String dongia =txtdongia.getText();
+			if ((ma.matches("\\d+") && ma.length() > 0)&&(dongia.matches("\\d+")&&dongia.length()>0)) {
+				int maa = Integer.parseInt(txtMadichvu.getText());
+				String ten = txtTendichvu.getText();
+				double donGia = Double.parseDouble(txtdongia.getText());
+				DichVu dv = new DichVu(maa, ten, donGia);
+				try {
+					if (dv_DAO.insert(dv)) {
 
-			try {
-				dv_DAO.insert(dv);
-				tableModel.addRow(new Object[] { dv.getMaDichVu(), dv.getTenDichVu(), dv.getDonGia() });
-				JOptionPane.showMessageDialog(this, "them thanh cong");
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(this, "Trùng");
+						tableModel.getDataVector().removeAllElements();
+						docDuLieuVaoTable();
+						JOptionPane.showMessageDialog(this, "Thêm thành công dịch vụ");
+					} else {
+						JOptionPane.showMessageDialog(this, "Trùng mã");
+					}
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(this, "Trùng");
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "Mã và đơn giá nhập vào phải là số và không được để trống ");
 			}
 		} else if (o.equals(btnSua)) {
 			int row = table.getSelectedRow();
@@ -383,19 +393,20 @@ public class GUI_QuanLyDichVu extends JFrame implements MouseListener, ActionLis
 					table.setValueAt(txtTendichvu.getText(), row, 1);
 					;
 					table.setValueAt(txtdongia.getText(), row, 2);
-					JOptionPane.showMessageDialog(this, "Sua thanh cong");
+					JOptionPane.showMessageDialog(this, "Sửa thành công");
 				} else {
-					JOptionPane.showMessageDialog(this, "Sua that bai");
+					JOptionPane.showMessageDialog(this, "Lỗi:Vui lòng chọn dòng cần sửa và không được sửa mã");
 				}
 			} else {
-				JOptionPane.showMessageDialog(this, "Chon dong can xoa");
+				JOptionPane.showMessageDialog(this, "Chọn dòng cần xóa");
 			}
 		} else if (o.equals(btnXoa)) {
 			int row = table.getSelectedRow();
 			try {
 				if (row == -1) {
 					JOptionPane.showMessageDialog(this, "Chon dong can xoa");
-				} else {
+				}
+				else {
 					DichVu dv = null;
 					dv = getDataInFormDichVu();
 					int ma = dv.getMaDichVu();

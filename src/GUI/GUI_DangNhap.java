@@ -32,6 +32,7 @@ public class GUI_DangNhap extends JFrame implements ActionListener {
 		setTitle("Dang Nhap");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
 
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(null);
@@ -50,7 +51,7 @@ public class GUI_DangNhap extends JFrame implements ActionListener {
 		lblNewLabel_1.setBounds(50, 83, 102, 28);
 		contentPanel.add(lblNewLabel_1);
 
-		txtUsername = new JTextField();
+		txtUsername = new JTextField("admin");
 		txtUsername.setColumns(10);
 		txtUsername.setBounds(160, 85, 185, 29);
 		contentPanel.add(txtUsername);
@@ -60,7 +61,7 @@ public class GUI_DangNhap extends JFrame implements ActionListener {
 		lblNewLabel_2.setBounds(66, 122, 102, 34);
 		contentPanel.add(lblNewLabel_2);
 
-		txtPassword = new JPasswordField();
+		txtPassword = new JPasswordField("admin");
 		txtPassword.setColumns(10);
 		txtPassword.setBounds(160, 127, 185, 28);
 		contentPanel.add(txtPassword);

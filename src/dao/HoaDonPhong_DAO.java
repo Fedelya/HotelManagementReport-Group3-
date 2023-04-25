@@ -182,4 +182,31 @@ public class HoaDonPhong_DAO {
 		return id;
 	}
 
+	public ArrayList<HoaDonPhong> getListHDPhongByTinhTrang(int tinhTrang) {
+        ArrayList<HoaDonPhong> dataList = new ArrayList<HoaDonPhong>();
+        ConnectDB.getInstance();
+        PreparedStatement stmt = null;
+        try {
+            Connection con = ConnectDB.getConnection();
+            String sql = "select * from HoaDonPhong where TinhTrang = ? order by NgayGioNhan DESC";
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, tinhTrang);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int maHD = rs.getInt("MaHD");
+                // int tinhTrang = rs.getInt("TinhTrang");
+                Date ngayGioNhan = rs.getDate("NgayGioNhan");
+                Date ngayGioTra = rs.getDate("NgayGioTra");
+                Phong phong = new Phong(rs.getString("MaPhong"));
+                KhachHang khachHang = new KhachHang(rs.getString("MaKH"));
+
+                HoaDonPhong hdp = new HoaDonPhong(maHD, tinhTrang, ngayGioNhan, ngayGioTra, phong, khachHang);
+                dataList.add(hdp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dataList;
+    }
 }

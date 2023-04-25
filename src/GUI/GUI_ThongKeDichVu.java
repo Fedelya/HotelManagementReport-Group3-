@@ -379,14 +379,14 @@ public class GUI_ThongKeDichVu extends JFrame implements ActionListener {
 		btnLogout.addActionListener(this);
 	}
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new GUI_ThongKeDichVu().setVisible(true);
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				new GUI_ThongKeDichVu().setVisible(true);
+//			}
+//		});
+//	}
 
 	private void reSizeColumnTable() {
 		// table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -490,7 +490,7 @@ public class GUI_ThongKeDichVu extends JFrame implements ActionListener {
 			HoaDonDichVu hoaDonDichVu = chiTietDichVu.getHoaDonDichVu();
 			DichVu dichVu = chiTietDichVu.getDichVu();
 			KhachHang khachHang = chiTietDichVu.getHoaDonDichVu().getKhachHang();
-			String date = formatDate(chiTietDichVu.getNgayGioDat());
+			String date = formatDate(chiTietDichVu.getHoaDonDichVu().getNgayGioDat());
 			Double thanhTien = chiTietDichVu.getSoLuong() * chiTietDichVu.getDichVu().getDonGia();
 			String tien = df.format(thanhTien);
 			sum += thanhTien;
