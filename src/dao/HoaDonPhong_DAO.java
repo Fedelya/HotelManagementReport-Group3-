@@ -65,14 +65,14 @@ public class HoaDonPhong_DAO {
 
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				LoaiPhong loaiPhong = new LoaiPhong(rs.getInt("MaLoaiPhong"), rs.getString("TenLoaiPhong"),
-						rs.getDouble("DonGia"));
-				Phong p = new Phong(rs.getString("MaPhong"), rs.getString("ViTri"), rs.getInt("TinhTrangP"), loaiPhong);
-				KhachHang kh = new KhachHang(rs.getString("MaKH"), rs.getString("TenKH"), rs.getString("QuocTich"),
-						rs.getString("CCCD"), rs.getDate("NgayHetHanCCCD"));
-
-				HoaDonPhong hdP = new HoaDonPhong(rs.getInt("MaHD"), rs.getInt("TinhTrangHD"), tuNgay, denNgay, p, kh);
-//				HoaDonPhong hdP = new HoaDonPhong(rs);
+//				LoaiPhong loaiPhong = new LoaiPhong(rs.getInt("MaLoaiPhong"), rs.getString("TenLoaiPhong"),
+//						rs.getDouble("DonGia"));
+//				Phong p = new Phong(rs.getString("MaPhong"), rs.getString("ViTri"), rs.getInt("TinhTrangP"), loaiPhong);
+//				KhachHang kh = new KhachHang(rs.getString("MaKH"), rs.getString("TenKH"), rs.getString("QuocTich"),
+//						rs.getString("CCCD"), rs.getDate("NgayHetHanCCCD"));
+//
+//				HoaDonPhong hdP = new HoaDonPhong(rs.getInt("MaHD"), rs.getInt("TinhTrangHD"), tuNgay, denNgay, p, kh);
+				HoaDonPhong hdP = new HoaDonPhong(rs);
 				dataList.add(hdP);
 			}
 		} catch (SQLException e) {
@@ -157,28 +157,29 @@ public class HoaDonPhong_DAO {
 		}
 		return n > 0;
 	}
-	
-	public int getLatestID() {
-        int id = 0;
-        ConnectDB.getInstance();
-        Statement stmt = null;
-        try {
-            Connection con = ConnectDB.getConnection();
-            String sql = "SELECT * FROM dbo.HoaDonPhong";
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-            ResultSet rs = stmt.executeQuery(sql);
-            rs.last();
-            id = rs.getInt("MaHD");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return id;
-    }
+	public int getLatestID() {
+		int id = 0;
+		ConnectDB.getInstance();
+		Statement stmt = null;
+		try {
+			Connection con = ConnectDB.getConnection();
+			String sql = "SELECT * FROM dbo.HoaDonPhong";
+			stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			ResultSet rs = stmt.executeQuery(sql);
+			rs.last();
+			id = rs.getInt("MaHD");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return id;
+	}
+
 }

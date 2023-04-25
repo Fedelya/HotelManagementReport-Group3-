@@ -89,11 +89,11 @@ public class HoaDonPhong {
         LoaiPhong loaiPhong = new LoaiPhong(rs.getInt("MaLoaiPhong"), rs.getString("TenLoaiPhong"),
                 rs.getDouble("DonGia"));
         Phong phong = new Phong(rs.getString("MaPhong"),
-                rs.getString("ViTri"), rs.getInt("TinhTrang"), loaiPhong);
+                rs.getString("ViTri"), rs.getInt("TinhTrangP"), loaiPhong);
         KhachHang kh = new KhachHang(rs.getString("MaKH"), rs.getString("TenKH"), rs.getString("QuocTich"),rs.getString("CCCD"), rs.getDate("NgayHetHanCCCD"));
 
         this.maHoaDon = rs.getInt("MaHD");
-        this.tinhTrang = rs.getInt("TinhTrang");
+        this.tinhTrang = rs.getInt("TinhTrangHD");
         this.ngayGioNhan = rs.getDate("NgayGioNhan");
         this.ngayGioTra = rs.getDate("NgayGioTra");
         this.phong = phong;

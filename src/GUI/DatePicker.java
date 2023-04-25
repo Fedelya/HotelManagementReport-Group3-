@@ -30,7 +30,7 @@ public class DatePicker extends JPanel implements ActionListener {
 
 	private void createGUI() {
 		txt = new JTextField();
-		txt.setBounds(0, 0, widthDefault -70, 20);
+		txt.setBounds(0, 0, widthDefault - 70, 20);
 		txt.setEditable(false);
 		txt.setText(DialogDatePicker.getToDay());
 
